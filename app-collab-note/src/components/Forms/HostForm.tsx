@@ -1,5 +1,6 @@
 import React from "react";
 import logo from "../../logo.png";
+import './Form.css';
 
 interface Props {
   onSubmit: (data: any) => void;
@@ -48,6 +49,7 @@ class HostForm extends React.Component<Props, State> {
         <div className="image">
           <img src={logo} alt="Joplin logo" />
         </div>
+        <h3>Joplin Collab Note</h3>
         <div className="content">
           <div className="form">
             <div className="form-group">

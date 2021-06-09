@@ -2,9 +2,9 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 import './App.css';
-import Editor from './Editor/Editor';
+import CollabNote from './containers/CollabNote';
 
-import Home from './Home'
+import Home from './containers/Home'
 
 
 
@@ -14,7 +14,7 @@ function App() {
       <Router>
         <Switch>
           <Route path='/' exact component={Home} />
-          <Route path='/collab' exact component={Editor} />
+          <Route path='/collab' exact component={CollabNote} />
         </Switch>
       </Router>
     </div>
