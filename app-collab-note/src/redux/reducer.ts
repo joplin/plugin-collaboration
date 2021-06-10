@@ -1,16 +1,9 @@
+import { connectRouter } from "connected-react-router";
+import { combineReducers } from "redux";
 import { Action, CONFIG_USER, SET_API_STATUS, SET_NOTE, UserConfig } from "./actions";
+import { History } from 'history';
 
-const intialState = {
-    isHost: false,
-    username: null,
-    apiStatus: null,
-    noteId: null,
-    roomId: null,
-    note: null,
-}
-
-
-function reducer(state: any = intialState, action: Action) {
+function reducer(state: any, action: Action) {
     switch(action.type) {
         case CONFIG_USER:{
             const config = action.payload as UserConfig;
@@ -42,4 +35,9 @@ function reducer(state: any = intialState, action: Action) {
     return state;
 }
 
-export default reducer;
+const createRootReducer = (history: History) => combineReducers({
+    router: connectRouter(history),
+    reducer,   
+});
+
+export default createRootReducer;

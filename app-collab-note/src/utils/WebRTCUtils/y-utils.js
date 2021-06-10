@@ -3,6 +3,7 @@ import { WebrtcProvider } from 'y-webrtc';
 import * as Y from 'yjs';
 
 class YUtils {
+    observers_ = new Map();
 
     constructor() {
         this.isInitialized = false;
@@ -28,7 +29,9 @@ class YUtils {
         this.isHost = isHost;
         this.username = username;
 
-        // if(isHost) this.yDoc.meta.hostJoined = true;
+        if(isHost) {
+            this.yText.setAttribute('HostJoined', true);
+        }
 
         /**
          * @todo
@@ -36,16 +39,10 @@ class YUtils {
          * By default it uses the dev signaling servers of Yjs
          */
         this.provider = new WebrtcProvider(id, this.yDoc);
-    }
+    }    
 
     get yText() {
         return this.yDoc?.getText('codemirror');
-    }
-
-    get hostJoined() {
-        // Coverting any to boolean
-        // return !!(this.yDoc?.meta.hostJoined);
-        return false;
     }
 
     setEditor(editor) {
@@ -59,8 +56,25 @@ class YUtils {
             this.binding.awareness.setLocalStateField('user', { name: username })
     }
 
+    addObserver(name, callback) {
+        if(name in this.observers_) throw new Error('Duplocate observer name');
+        if(!this.isInitialized) throw new Error('Session not intialized');
+
+        this.observers_.set(name, callback)
+
+        this.yText.observe(callback);
+    }
+
+    removeObserver(name) {
+        if(name in this.observers_) {
+            const callback = this.observers_.get(name);
+            this.yText.unobserve(callback);
+        }
+    }
+
     destroy() {
-        // if(this.isHost && this.yDoc) this.yDoc.meta.hostJoined = false;
+        if(this.isHost && this.yDoc) this.yText.setAttribute('HostJoined', false);
+        this.observers_.clear();
         this.yDoc?.destroy();
         this.yUndoManager?.destroy();
         this.provider?.destroy();

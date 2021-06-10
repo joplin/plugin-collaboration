@@ -47,6 +47,7 @@ class JoinForm extends React.Component<Props, State> {
         <div className="image">
           <img src={logo} alt="Joplin logo" />
         </div>
+        <h3>Joplin Collab Note</h3>
         <div className="content">
           <div className="form">
             <div className="form-group">

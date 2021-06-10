@@ -1,12 +1,17 @@
+import configureStore from "./configStore";
 
-import { applyMiddleware, createStore } from 'redux';
-import reducer from './reducer';
-import { createLogger } from 'redux-logger';
+const initialState = {
+    isHost: false,
+    username: null,
+    apiStatus: null,
+    noteId: null,
+    roomId: null,
+    note: null,
+}
 
+const store = configureStore(initialState);
 
-const store = createStore(
-    reducer,
-    applyMiddleware(createLogger())
-);
+export type GetStateType = typeof store.getState;
+export type DispatchType = typeof store.dispatch;
 
 export default store;
