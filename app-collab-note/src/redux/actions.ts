@@ -1,4 +1,3 @@
-import { DispatchType, GetStateType } from "./store";
 import { Note } from "../utils/types";
 import { bridge } from "../utils/DataApiUtils/bridge";
 import { FOUND, SEARCHING } from "../utils/DataApiUtils/clipperPortStatus";
@@ -17,9 +16,9 @@ export interface UserConfig {
 }
 
 export enum MessageType {
-    LOADING,
-    ERROR,
-    SUCCESS,
+    LOADING='LOADING',
+    ERROR='ERROR',
+    SUCCESS='SUCCESS',
 }
 
 export interface ApiStatus {
@@ -58,7 +57,7 @@ function setNoteDetails(note: Note) {
     }
 }
 
-const configureUserDetails = (userConfig: UserConfig) => (dispatch: DispatchType, getState: GetStateType) => {
+const configureUserDetails = (userConfig: UserConfig) => (dispatch: any, getState: any) => {
     if(userConfig.isHost) {
         const { token, noteId } = userConfig;
 
@@ -94,7 +93,7 @@ const configureUserDetails = (userConfig: UserConfig) => (dispatch: DispatchType
         })
         .catch(err => {
             dispatch(setApiStatus({
-                messageType: MessageType.SUCCESS,
+                messageType: MessageType.ERROR,
                 message: err.message,
             }));
         });
@@ -105,4 +104,4 @@ const configureUserDetails = (userConfig: UserConfig) => (dispatch: DispatchType
     }
 };
 
-export { setUserDetails as configUser, setApiStatus, setNoteDetails }
+export { setUserDetails, setApiStatus, setNoteDetails, configureUserDetails }

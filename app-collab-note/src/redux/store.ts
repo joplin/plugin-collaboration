@@ -1,13 +1,4 @@
-import configureStore from "./configStore";
-
-const initialState = {
-    isHost: false,
-    username: null,
-    apiStatus: null,
-    noteId: null,
-    roomId: null,
-    note: null,
-}
+import configureStore, { initialState } from "./configStore";
 
 const store = configureStore(initialState);
 

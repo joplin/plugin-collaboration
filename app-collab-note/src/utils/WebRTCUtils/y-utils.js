@@ -57,7 +57,7 @@ class YUtils {
     }
 
     addObserver(name, callback) {
-        if(name in this.observers_) throw new Error('Duplocate observer name');
+        if(name in this.observers_) throw new Error('Duplicate observer name');
         if(!this.isInitialized) throw new Error('Session not intialized');
 
         this.observers_.set(name, callback)

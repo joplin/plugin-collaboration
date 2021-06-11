@@ -84,11 +84,12 @@ class CollabNote extends Component<Props, State> {
 }
 
 const mapStateToProps = (state: any) => {
+  const { isHost, roomId, note, username } = state.app;
   return {
-    isHost: state.isHost,
-    roomId: state.roomId,
-    note: state.note,
-    username: state.username,
+    isHost,
+    roomId,
+    note,
+    username,
   };
 };
 

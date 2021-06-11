@@ -38,6 +38,7 @@ class Editor extends Component<Props, State> {
         indentWithTabs: true,
         indentUnit: 4,
         spellcheck: true,
+        theme: 'material'
       }, editorConfig);
       const editor = CodeMirror(editorParentRef.current, config);
       editor.setSize('100%', '100%');

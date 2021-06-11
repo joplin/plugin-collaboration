@@ -1,16 +1,14 @@
-import { setApiStatus } from '../../redux/actions';
 import { FOUND, INVALID_TOKEN, SEARCHING, NOT_FOUND } from './clipperPortStatus';
 import { config } from './config';
 
 class Bridge {
 
-	async init(dispatch, authToken) {
+	async init(authToken) {
 		const initPort = config().startPort;
 
 		this.clipperServerPortStatus_ = NOT_FOUND;
 		this.clipperServerPort_ = null;
 		this.authToken = () => authToken;
-		this.dispatch = (action) => dispatch(action);
 
 		await this.findClipperServerPort(initPort);
 
@@ -18,8 +16,8 @@ class Bridge {
 
 	async findClipperServerPort(initPort) {
 		let port = initPort;
-		this.dispatch(setApiStatus(SEARCHING));
 
+		this.clipperServerPortStatus_ = SEARCHING;
 		for (let i = 0; i < 10; i++) {
 			try {
 				let response = await fetch(`http://127.0.0.1:${port}/ping`);
@@ -30,12 +28,9 @@ class Bridge {
 
 					const token = this.authToken();
 					return this.clipperApiExec('GET', 'notes', { token })
-					.then(resp => {
-						this.dispatch(setApiStatus(FOUND));
-					})
 					.catch(err => {
-						this.dispatch(setApiStatus(INVALID_TOKEN));
 						this.clipperServerPortStatus_ = INVALID_TOKEN;
+						throw new Error("Invalid Token")
 					})
 				}
 			} catch (error) {
@@ -46,7 +41,6 @@ class Bridge {
 		}
 
 		this.clipperServerPortStatus_ = NOT_FOUND;
-		this.dispatch(setApiStatus(NOT_FOUND));
 		throw new Error('Clipper Server not found!');
 	}
 
@@ -60,7 +54,7 @@ class Bridge {
 	}
 
 	async clipperApiExec(method, path, query, body) {
-		if(!this.clipperServerPort_ || this.clipperServerPortStatus_ !== FOUND) throw new Error("Data API not found!");
+		if(!this.clipperServerPort_ || this.clipperServerPortStatus_ !== FOUND) throw new Error("Clipper Server not found!");
 
 		const baseUrl = this.clipperServerBaseUrl();
 
@@ -99,9 +93,9 @@ class Bridge {
 	}
 
 	async updateNoteContent(note) {
-		if (!note.id) throw new Error('Cannot update a note without id');
-		const { body } = note;
-		return this.clipperApiExec('PUT', `notes/${note.id}`, {}, { body });
+		const { id, body } = note;
+		if (!id) throw new Error('Cannot update a note without id');
+		return this.clipperApiExec('PUT', `notes/${id}`, {}, { body });
 	}
 
 	async getNote(id, fields = []) {

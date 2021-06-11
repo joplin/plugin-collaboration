@@ -2,8 +2,9 @@ import { connectRouter } from "connected-react-router";
 import { combineReducers } from "redux";
 import { Action, CONFIG_USER, SET_API_STATUS, SET_NOTE, UserConfig } from "./actions";
 import { History } from 'history';
+import { initialState } from "./configStore";
 
-function reducer(state: any, action: Action) {
+function reducer(state = initialState, action: Action) {
     switch(action.type) {
         case CONFIG_USER:{
             const config = action.payload as UserConfig;
@@ -37,7 +38,7 @@ function reducer(state: any, action: Action) {
 
 const createRootReducer = (history: History) => combineReducers({
     router: connectRouter(history),
-    reducer,   
+    app: reducer,   
 });
 
 export default createRootReducer;

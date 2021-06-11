@@ -5,9 +5,9 @@ import { connect } from "react-redux";
 
 import HostForm from "../../components/Forms/HostForm";
 import JoinForm from "../../components/Forms/JoinForm";
-import { configUser, setNoteDetails } from "../../redux/actions";
+import { configureUserDetails } from "../../redux/actions";
 import { UserConfig } from "../../redux/actions";
-import { bridge } from "../../utils/DataApiUtils/bridge";
+import { DispatchType } from "../../redux/store";
 
 const Container = styled.div`
   width: fit-content;
@@ -26,7 +26,6 @@ const Link = styled.a`
 `;
 
 interface Props {
-  history: any,
   dispatch: any
 }
 
@@ -45,28 +44,11 @@ class Home extends React.Component<Props, State> {
   componentDidMount() {}
 
   onSubmit = (formData: any) => {
-    const { history, dispatch } = this.props;
+    const { dispatch } = this.props;
     const { isHost } = this.state;
-    const config = { isHost, ...formData } as UserConfig
+    const userConfig = { isHost, ...formData } as UserConfig
 
-    dispatch(configUser(config));
-
-    if(isHost) {
-      bridge().init(dispatch, formData.token)
-      .then(() => {
-        return bridge().getNote(formData.noteId, ['title', 'body'])
-      })
-      .then(note => {
-        dispatch(setNoteDetails(note));
-        history.push('/collab');
-      })
-      .catch(err => {
-        alert(err.message);
-      });
-    }
-    else {
-      history.push('/collab');
-    }
+    dispatch(configureUserDetails(userConfig));
   };
 
   changeState = () => {
@@ -91,7 +73,7 @@ class Home extends React.Component<Props, State> {
   }
 }
 
-const mapDispatchToProps = (dispatch: any) => {
+const mapDispatchToProps = (dispatch: DispatchType) => {
   return {
     dispatch: (action: any) => { dispatch(action) }
   }
