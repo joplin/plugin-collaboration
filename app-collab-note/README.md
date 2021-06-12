@@ -4,6 +4,23 @@ This Project aims to develop a web app with a collaborative editor for a Joplin 
 
 For more info on the project please refer to the post: [real-time collaboration on  note project](https://discourse.joplinapp.org/t/real-time-collaboration-on-a-note-project/17486)
 
+## getting started
+Firstly install all the project dependencies
+```
+npm install
+```
+
+If you want to use development build of Data API (starting port: 27583), this app should be run as
+
+```
+npm start
+```
+If you want to use production build of Data API (starting port: 41184), this app should be run as
+```
+npm run build
+serve build
+```
+
 ## Available Scripts
 
 In the project directory, you can run:
