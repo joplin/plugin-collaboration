@@ -3,7 +3,6 @@ import { WebrtcProvider } from 'y-webrtc';
 import * as Y from 'yjs';
 
 class YUtils {
-    observers_ = new Map();
 
     constructor() {
         this.isInitialized = false;
@@ -28,21 +27,32 @@ class YUtils {
 
         this.isHost = isHost;
         this.username = username;
-
-        if(isHost) {
-            this.yText.setAttribute('HostJoined', true);
-        }
-
         /**
          * @todo
          * Need to pass singaling sever URL to the WebrtcProvider Constructor
          * By default it uses the dev signaling servers of Yjs
          */
         this.provider = new WebrtcProvider(id, this.yDoc);
-    }    
+
+        setTimeout(() => {
+            if(isHost) {
+                this.setSessionProp('HostJoined', true);
+                window.addEventListener('beforeunload', (event) => {
+                    event.preventDefault();
+                    // required by Chrome
+                    event.returnValue = '';
+                    return this.setSessionProp('HostJoined', false);
+                })
+            }
+        }, 500)
+    }
 
     get yText() {
-        return this.yDoc?.getText('codemirror');
+        return this.yDoc?.getText('note');
+    }
+
+    get props() {
+        return this.yDoc?.getMap('session-props');
     }
 
     setEditor(editor) {
@@ -53,34 +63,25 @@ class YUtils {
 
     setUsername(username) {
         if(this.binding)
-            this.binding.awareness.setLocalStateField('user', { name: username })
+            this.binding.awareness.setLocalStateField('user', { name: username });
     }
 
-    addObserver(name, callback) {
-        if(name in this.observers_) throw new Error('Duplicate observer name');
-        if(!this.isInitialized) throw new Error('Session not intialized');
-
-        this.observers_.set(name, callback)
-
-        this.yText.observe(callback);
+    setSessionProp(key, value) {
+        if(!key || !this.props) return;
+        this.props.set(key, value);
     }
 
-    removeObserver(name) {
-        if(name in this.observers_) {
-            const callback = this.observers_.get(name);
-            this.yText.unobserve(callback);
-        }
+    getSessionProp(key) {
+        if(!this.props) return null;
+        return this.props.get(key);
     }
 
     destroy() {
-        if(this.isHost && this.yDoc) this.yText.setAttribute('HostJoined', false);
-        this.observers_.clear();
+        if(this.isHost && this.props) this.setSessionProp('HostJoined', false);
         this.yDoc?.destroy();
         this.yUndoManager?.destroy();
         this.provider?.destroy();
-        this.binding?.destroy();
     }
-
 }
 
 const yUtils_ = new YUtils();

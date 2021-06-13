@@ -7,12 +7,14 @@ import { yUtils } from "../../utils/WebRTCUtils/y-utils";
 import Editor from "../../components/Editor";
 import { Note } from "../../utils/types";
 import { Redirect } from "react-router";
+import { handleHostJoined } from "../../redux/actions";
 
 interface Props {
   isHost: boolean;
   roomId: string;
   note: Note;
   username: string;
+  setHostJoined: (hostJoined: boolean) => void;
 }
 
 interface State {}
@@ -47,11 +49,22 @@ const Container = styled.div`
 
 class CollabNote extends Component<Props, State> {
   editor: CodeMirror.Editor | null;
+
   constructor(props: Props) {
     super(props);
     this.editor = null;
-    const { isHost, roomId, username } = props;
+    const { isHost, roomId, username, setHostJoined } = props;
     yUtils().init(roomId, isHost, username);
+    if(!isHost) {
+      setHostJoined(!!yUtils().getSessionProp('HostJoined'));
+      yUtils().props?.observe((event) => {
+        if(event.keysChanged.has('HostJoined')) {
+          setTimeout(() => {
+            setHostJoined(!!yUtils().getSessionProp('HostJoined'));
+          }, 500);
+        }
+      });
+    }
   }
 
   onEditorMount = (editor: CodeMirror.Editor) => {
@@ -62,6 +75,10 @@ class CollabNote extends Component<Props, State> {
       editor.setValue(note.body);
     }
   };
+
+  componentWillUnmount() {
+    yUtils().destroy();
+  }
 
   render() {
     if (!this.props.roomId || !this.props.username) {
@@ -93,4 +110,12 @@ const mapStateToProps = (state: any) => {
   };
 };
 
-export default connect(mapStateToProps)(CollabNote);
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    setHostJoined: (hostJoined: boolean) => { 
+      dispatch(handleHostJoined(hostJoined)); 
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CollabNote);

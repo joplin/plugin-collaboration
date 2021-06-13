@@ -10,6 +10,7 @@ export const history = createBrowserHistory();
 export const initialState = {
   app: {
     isHost: false,
+    hostJoined: false,
     username: null,
     apiStatus: null,
     noteId: null,

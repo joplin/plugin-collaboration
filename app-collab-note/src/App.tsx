@@ -18,7 +18,7 @@ function App() {
           <Route path="/collab" exact component={CollabNote} />
         </Switch>
       </ConnectedRouter>
-      { <StatusBar /> }
+      <StatusBar />
     </div>
   );
 }
