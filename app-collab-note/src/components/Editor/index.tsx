@@ -1,16 +1,18 @@
-import React, { Component, createRef, RefObject } from "react";
+import React, { Component, createRef, RefObject } from 'react';
 
-import CodeMirror from "codemirror";
-import "codemirror/lib/codemirror.css";
-import "codemirror/theme/material.css";
-import "codemirror/mode/markdown/markdown";
+import CodeMirror from 'codemirror';
+import 'codemirror/lib/codemirror.css';
+import 'codemirror/theme/material.css';
+import 'codemirror/mode/markdown/markdown';
 
-import "./Editor.css";
+import './Editor.css';
+import { connect } from 'react-redux';
 
 interface Props {
   onEditorMount: (editor: CodeMirror.Editor) => void;
   editorConfig?: CodeMirror.EditorConfiguration;
   containerStyle: React.CSSProperties;
+  isReadOnly: boolean;
 }
 
 interface State {
@@ -19,6 +21,7 @@ interface State {
 
 
 class Editor extends Component<Props, State> {
+  editor: CodeMirror.Editor | null = null;
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -29,21 +32,28 @@ class Editor extends Component<Props, State> {
   componentDidMount() {
     const { editorParentRef } = this.state;
     if (editorParentRef.current) {
-      const { editorConfig, onEditorMount } = this.props;
+      const { editorConfig, onEditorMount, isReadOnly } = this.props;
   
       const config = Object.assign({}, {
-        mode: "markdown",
+        mode: 'markdown',
         lineWrapping: true,
         lineNumbers: false,
         indentWithTabs: true,
         indentUnit: 4,
         spellcheck: true,
-        theme: 'material'
+        theme: 'material',
       }, editorConfig);
-      const editor = CodeMirror(editorParentRef.current, config);
-      editor.setSize('100%', '100%');
-      onEditorMount(editor);
+
+      this.editor = CodeMirror(editorParentRef.current, config);
+      this.editor.setOption('readOnly', isReadOnly);
+      this.editor.setSize('100%', '100%');
+      onEditorMount(this.editor);
     }
+  }
+
+  componentDidUpdate() {
+    const { isReadOnly } = this.props;
+    this.editor?.setOption('readOnly', isReadOnly);
   }
 
   render() {
@@ -53,4 +63,11 @@ class Editor extends Component<Props, State> {
   }
 }
 
-export default Editor;
+const mapStateToProps = (state: any) => {
+  const { isHost, hostJoined } = state.app;
+  return {
+    isReadOnly: (!isHost && !hostJoined)
+  }
+}
+
+export default connect(mapStateToProps)(Editor);

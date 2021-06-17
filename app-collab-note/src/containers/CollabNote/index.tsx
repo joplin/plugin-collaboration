@@ -7,12 +7,16 @@ import { yUtils } from "../../utils/WebRTCUtils/y-utils";
 import Editor from "../../components/Editor";
 import { Note } from "../../utils/types";
 import { Redirect } from "react-router";
+import { handleHostStatusChange } from "../../redux/actions";
+import SessionEvents from "../../utils/WebRTCUtils/sessionEvents";
 
 interface Props {
   isHost: boolean;
   roomId: string;
   note: Note;
   username: string;
+  hostJoined: boolean;
+  setHostJoined: (hostJoined: boolean) => void;
 }
 
 interface State {}
@@ -47,11 +51,31 @@ const Container = styled.div`
 
 class CollabNote extends Component<Props, State> {
   editor: CodeMirror.Editor | null;
+
   constructor(props: Props) {
     super(props);
     this.editor = null;
-    const { isHost, roomId, username } = props;
+    const { isHost, roomId, username, setHostJoined } = props;
     yUtils().init(roomId, isHost, username);
+    if(!isHost) {
+      setHostJoined(yUtils().didHostJoin());
+      yUtils().on(SessionEvents.HostJoined, this.handleHostJoined);
+      yUtils().on(SessionEvents.HostLeft, this.handleHostLeft);
+    }
+  }
+
+  handleHostJoined = () => {
+    const { hostJoined, setHostJoined } = this.props;
+    if(hostJoined) return;
+    setHostJoined(true);
+    this.editor?.setOption('readOnly', false);
+  }
+
+  handleHostLeft = () => {
+    const { hostJoined, setHostJoined } = this.props;
+    if(!hostJoined) return;
+    setHostJoined(false);
+    this.editor?.setOption('readOnly', true);
   }
 
   onEditorMount = (editor: CodeMirror.Editor) => {
@@ -61,7 +85,12 @@ class CollabNote extends Component<Props, State> {
     if (isHost) {
       editor.setValue(note.body);
     }
+    this.editor = editor;
   };
+
+  componentWillUnmount() {
+    yUtils().destroy();
+  }
 
   render() {
     if (!this.props.roomId || !this.props.username) {
@@ -84,13 +113,22 @@ class CollabNote extends Component<Props, State> {
 }
 
 const mapStateToProps = (state: any) => {
-  const { isHost, roomId, note, username } = state.app;
+  const { isHost, roomId, note, username, hostJoined } = state.app;
   return {
     isHost,
     roomId,
     note,
     username,
+    hostJoined
   };
 };
 
-export default connect(mapStateToProps)(CollabNote);
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    setHostJoined: (hostJoined: boolean) => { 
+      dispatch(handleHostStatusChange(hostJoined)); 
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CollabNote);

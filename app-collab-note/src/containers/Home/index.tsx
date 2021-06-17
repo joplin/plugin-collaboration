@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import HostForm from "../../components/Forms/HostForm";
 import JoinForm from "../../components/Forms/JoinForm";
 import { configureUserDetails } from "../../redux/actions";
-import { UserConfig } from "../../redux/actions";
+import { UserConfig, resetState } from "../../redux/actions";
 import { DispatchType } from "../../redux/store";
 
 const Container = styled.div`
@@ -39,6 +39,7 @@ class Home extends React.Component<Props, State> {
     this.state = {
       isHost: true,
     };
+    props.dispatch(resetState())
   }
 
   componentDidMount() {}
