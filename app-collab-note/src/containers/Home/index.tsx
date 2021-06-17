@@ -1,13 +1,13 @@
-import React from "react";
+import React from 'react';
 
-import styled from "styled-components";
-import { connect } from "react-redux";
+import styled from 'styled-components';
+import { connect } from 'react-redux';
 
-import HostForm from "../../components/Forms/HostForm";
-import JoinForm from "../../components/Forms/JoinForm";
-import { configureUserDetails } from "../../redux/actions";
-import { UserConfig, resetState } from "../../redux/actions";
-import { DispatchType } from "../../redux/store";
+import HostForm from 'components/Forms/HostForm';
+import JoinForm from 'components/Forms/JoinForm';
+import { configureUserDetails } from 'redux/actions';
+import { UserConfig, resetState } from 'redux/actions';
+import { DispatchType } from 'redux/store';
 
 const Container = styled.div`
   width: fit-content;
@@ -39,15 +39,13 @@ class Home extends React.Component<Props, State> {
     this.state = {
       isHost: true,
     };
-    props.dispatch(resetState())
+    props.dispatch(resetState());
   }
-
-  componentDidMount() {}
 
   onSubmit = (formData: any) => {
     const { dispatch } = this.props;
     const { isHost } = this.state;
-    const userConfig = { isHost, ...formData } as UserConfig
+    const userConfig = { isHost, ...formData } as UserConfig;
 
     dispatch(configureUserDetails(userConfig));
   };
@@ -65,8 +63,8 @@ class Home extends React.Component<Props, State> {
         {isHost && <HostForm onSubmit={this.onSubmit} />}
         {!isHost && <JoinForm onSubmit={this.onSubmit} />}
         <Option>
-          {isHost && "Want to join existing room? "}
-          {!isHost && "Want to host a Joplin Note? "}
+          {isHost && 'Want to join existing room? '}
+          {!isHost && 'Want to host a Joplin Note? '}
           <Link onClick={this.changeState}>Click here</Link>
         </Option>
       </Container>
@@ -76,9 +74,8 @@ class Home extends React.Component<Props, State> {
 
 const mapDispatchToProps = (dispatch: DispatchType) => {
   return {
-    dispatch: (action: any) => { dispatch(action) }
-  }
-}
+    dispatch: (action: any) => { dispatch(action); }
+  };
+};
 
-// This adds dispatch as a default prop
 export default connect(null, mapDispatchToProps)(Home);

@@ -14,8 +14,10 @@ interface AwarenessEventArgs {
   removed: any[],
 }
 
+type callbackType = (...args: any[]) => void;
+
 class YUtils {
-  observers_ = new Map<SessionEvents, Function[]>();
+  observers_ = new Map<SessionEvents, callbackType[]>();
   isInitialized: boolean;
   yDoc: Y.Doc | undefined;
   yUndoManager: Y.UndoManager | undefined;
@@ -23,7 +25,7 @@ class YUtils {
   username: string | undefined;
   provider: WebrtcProvider | undefined;
   binding: CodemirrorBinding | undefined;
-  hostClientId = () => { return null };
+  hostClientId = () => { return null; };
 
   constructor() {
     this.isInitialized = false;
@@ -67,6 +69,8 @@ class YUtils {
       // If the current user is not the Host, events related to Host are emitted;
       awareness.setLocalStateField('role', roles.PEER);
       awareness.on('update', ({added, updated, removed}: AwarenessEventArgs, origin: string) => {
+
+        if(origin === 'local') return;
         
         added?.forEach((clientId: any) => {
           const state = awareness.states.get(clientId);
@@ -87,6 +91,7 @@ class YUtils {
         removed?.forEach((clientId: any) => {
           if (this.hostClientId() === clientId) {
             this.emit(SessionEvents.HostLeft);
+            this.yUndoManager?.clear();
           }
         });
 
@@ -102,13 +107,13 @@ class YUtils {
     return this.yDoc?.getMap('session-props');
   }
 
-  on(event: SessionEvents, callback: Function) {
+  on(event: SessionEvents, callback: callbackType) {
     const observers = this.observers_.get(event) || [];
     observers.push(callback);
     this.observers_.set(event, observers);
   }
 
-  off(event: SessionEvents, callback: Function) {
+  off(event: SessionEvents, callback: callbackType) {
     let observers = this.observers_.get(event);
     if(observers !== undefined) {
       observers = observers.filter((cb) => cb !== callback);
@@ -125,8 +130,8 @@ class YUtils {
     let callbacks = this.observers_.get(event) || [];
     callbacks = [...callbacks];
 
-    callbacks.forEach((callback: Function) => {
-      callback(...args)
+    callbacks.forEach((callback: callbackType) => {
+      callback(...args);
     });
   }
 
@@ -134,7 +139,7 @@ class YUtils {
     if(!this.provider) return false;
     const { states } = this.provider.awareness;
 
-    for(let clientState of states.values()) {
+    for(const clientState of states.values()) {
       if(clientState['role'] === roles.HOST) {
         return true;
       }
@@ -166,8 +171,8 @@ class YUtils {
 
 const yUtils_ = new YUtils();
 
-const yUtils = () => {
+const yUtils = (): YUtils => {
   return yUtils_;
-}
+};
 
 export { yUtils };

@@ -17,9 +17,9 @@ export const initialState = {
     roomId: null,
     note: null,
   }
-}
+};
 
-export default function configureStore(preloadedState: any) {
+export default function configureStore(preloadedState = initialState): any {
   const store = createStore(
     createRootReducer(history),
     preloadedState,

@@ -26,7 +26,7 @@ class Editor extends Component<Props, State> {
     super(props);
     this.state = {
       editorParentRef: createRef()
-    }
+    };
   }
 
   componentDidMount() {
@@ -67,7 +67,7 @@ const mapStateToProps = (state: any) => {
   const { isHost, hostJoined } = state.app;
   return {
     isReadOnly: (!isHost && !hostJoined)
-  }
-}
+  };
+};
 
 export default connect(mapStateToProps)(Editor);

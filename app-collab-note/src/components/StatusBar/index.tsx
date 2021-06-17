@@ -1,10 +1,10 @@
-import React, { Component } from "react";
-import loader from "./icons/loader.svg";
-import error from "./icons/error.svg";
-import success from "./icons/success.svg";
-import styled from "styled-components";
-import { MessageType } from "../../redux/actions";
-import { connect } from "react-redux";
+import React, { Component } from 'react';
+import loader from './icons/loader.svg';
+import error from './icons/error.svg';
+import success from './icons/success.svg';
+import styled from 'styled-components';
+import { MessageType } from 'redux/actions';
+import { connect } from 'react-redux';
 
 const Container = styled.div`
   position: absolute;
@@ -20,7 +20,7 @@ const Message = styled.div`
 `;
 
 const Image = styled.img`
-  heigth: 40px;
+  height: 40px;
   width: 40px;
 `;
 
@@ -37,7 +37,7 @@ class StatusBar extends Component<Props> {
     if(!showStatus) {
       return (
         <></>
-      )
+      );
     }
 
     return (
