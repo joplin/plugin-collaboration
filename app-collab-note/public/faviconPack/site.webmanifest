@@ -1,6 +1,6 @@
 {
-  "name": "",
-  "short_name": "",
+  "name": "Joplin Collab Note",
+  "short_name": "Collab Note",
   "icons": [
     {
       "src": "/android-chrome-192x192.png",

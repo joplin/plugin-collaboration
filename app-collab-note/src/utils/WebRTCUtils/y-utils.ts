@@ -163,6 +163,7 @@ class YUtils {
 
   destroy() {
     if(!this.isHost) this.observers_.clear();
+    this.isInitialized = false;
     this.yDoc?.destroy();
     this.yUndoManager?.destroy();
     this.provider?.destroy();
