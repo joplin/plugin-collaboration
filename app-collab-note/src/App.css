@@ -1,16 +1,15 @@
 @import url("https://fonts.googleapis.com/css?family=Open+Sans&display=swap");
 
-* { 
-	box-sizing: border-box;
+* {
+  box-sizing: border-box;
 }
 
 .App {
-	font-family: 'Open Sans', sans-serif;
-	min-width: 100vw;
-	min-height: 100vh; 
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	position: relative;
+  font-family: "Open Sans", sans-serif;
+  min-width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
 }
-

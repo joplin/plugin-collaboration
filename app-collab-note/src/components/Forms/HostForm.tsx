@@ -1,5 +1,5 @@
-import React from "react";
-import logo from "../../logo.svg";
+import React from 'react';
+import logo from 'logo.svg';
 import './Form.css';
 
 interface Props {
@@ -18,22 +18,22 @@ class HostForm extends React.Component<Props, State> {
     this.state = { username: '', noteId: '', token: '' };
   }
 
-  updateField = (event: any) => {
+  updateField = (event: { target: any }): void => {
     const { id, value } = event.target;
     switch(id) {
-      case 'username':
-        this.setState({ username: value });
-        break;
-      case 'noteId':
-        this.setState({ noteId: value });
-        break;
-      case 'token':
-        this.setState({ token: value })
-        break;
+    case 'username':
+      this.setState({ username: value });
+      break;
+    case 'noteId':
+      this.setState({ noteId: value });
+      break;
+    case 'token':
+      this.setState({ token: value });
+      break;
     }
   }
 
-  handleSubmit = () => {
+  handleSubmit = (): void => {
     const { username, noteId, token }  = this.state;
     if(!!username && !!noteId && !!token) {
       this.props.onSubmit({ username, noteId, token });
@@ -43,7 +43,7 @@ class HostForm extends React.Component<Props, State> {
     }
   }
 
-  render() {
+  render(): JSX.Element {
     return (
       <div className="base-container">
         <div className="image">

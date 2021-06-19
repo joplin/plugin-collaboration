@@ -1,5 +1,5 @@
-import React from "react";
-import logo from "../../logo.svg";
+import React from 'react';
+import logo from 'logo.svg';
 import './Form.css';
 
 
@@ -19,19 +19,19 @@ class JoinForm extends React.Component<Props, State> {
     this.state = { username: '', roomId: '' };
   }
 
-  updateField = (event: any) => {
+  updateField = (event: { target: any }): void => {
     const { id, value } = event.target;
     switch(id) {
-      case 'username':
-        this.setState({ username: value });
-        break;
-      case 'roomId':
-        this.setState({ roomId: value });
-        break;
+    case 'username':
+      this.setState({ username: value });
+      break;
+    case 'roomId':
+      this.setState({ roomId: value });
+      break;
     }
   }
 
-  handleSubmit = () => {
+  handleSubmit = (): void => {
     const { username, roomId }  = this.state;
     if(!!username && !!roomId) {
       this.props.onSubmit({ username, roomId });
@@ -41,7 +41,7 @@ class JoinForm extends React.Component<Props, State> {
     }
   }
 
-  render() {
+  render(): JSX.Element {
     return (
       <div className="base-container">
         <div className="image">

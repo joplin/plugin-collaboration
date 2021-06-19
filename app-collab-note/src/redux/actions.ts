@@ -1,7 +1,9 @@
-import { Note } from "../utils/types";
-import { bridge } from "../utils/DataApiUtils/bridge";
-import { FOUND, SEARCHING } from "../utils/DataApiUtils/clipperPortStatus";
 import { push } from 'connected-react-router';
+
+import { Note } from 'utils/types';
+import { bridge } from 'utils/DataApiUtils/bridge';
+import { FOUND, SEARCHING } from 'utils/DataApiUtils/clipperPortStatus';
+import { DispatchType, GetStateType } from './store';
 
 export const SET_API_STATUS = 'SET_API_STATUS';
 export const SET_NOTE = 'SET_NOTE';
@@ -40,14 +42,14 @@ function setApiStatus(apiStatus: ApiStatus | null): Action {
     payload: {
       apiStatus
     }
-  }
+  };
 }
 
 function setUserDetails(userConfig: UserConfig): Action {
   return {
     type: CONFIG_USER,
     payload: userConfig
-  }
+  };
 }
 
 function setNoteDetails(note: Note): Action {
@@ -56,7 +58,7 @@ function setNoteDetails(note: Note): Action {
     payload: {
       note
     }
-  }
+  };
 }
 
 function setHostJoined(hostJoined: boolean): Action {
@@ -65,18 +67,18 @@ function setHostJoined(hostJoined: boolean): Action {
     payload: {
       hostJoined
     }
-  }
+  };
 }
 
-function resetState() {
+function resetState(): Action {
   return {
     type: RESET_STATE,
     payload: null
-  }
+  };
 }
 
 function configureUserDetails(userConfig: UserConfig) {
-  return (dispatch: any) => {
+  return (dispatch: DispatchType): void => {
     dispatch(setApiStatus(null));
 
     if (userConfig.isHost) {
@@ -97,7 +99,7 @@ function configureUserDetails(userConfig: UserConfig) {
           }));
 
           return bridge().getNote(noteId, ['id', 'title', 'body'])
-            .catch(err => {
+            .catch(() => {
               throw new Error('Note not found!');
             });
         })
@@ -127,11 +129,11 @@ function configureUserDetails(userConfig: UserConfig) {
 }
 
 function handleHostStatusChange(hostJoined: boolean) {
-  return (dispatch: any, getState: any) => {
+  return (dispatch: DispatchType, getState: GetStateType): void => {
     dispatch(setHostJoined(hostJoined));
 
     const state = getState();
-    if (!state.isHost) {
+    if (!state.app.isHost) {
       if (hostJoined) {
         dispatch(setApiStatus({
           messageType: MessageType.SUCCESS,
@@ -148,4 +150,4 @@ function handleHostStatusChange(hostJoined: boolean) {
   };
 }
 
-export { setUserDetails, setApiStatus, setNoteDetails, resetState, configureUserDetails, handleHostStatusChange }
+export { setUserDetails, setApiStatus, setNoteDetails, resetState, configureUserDetails, handleHostStatusChange };

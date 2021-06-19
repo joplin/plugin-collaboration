@@ -1,4 +1,4 @@
-import configureStore, { initialState } from "./configStore";
+import configureStore, { initialState } from './configStore';
 
 const store = configureStore(initialState);
 
