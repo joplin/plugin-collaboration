@@ -1,6 +1,6 @@
 import { push } from 'connected-react-router';
 
-import { Note } from 'utils/types';
+import { Note, Resource } from 'utils/types';
 import { bridge } from 'utils/DataApiUtils/bridge';
 import { FOUND, SEARCHING } from 'utils/DataApiUtils/clipperPortStatus';
 import { DispatchType, GetStateType } from './store';
@@ -10,6 +10,7 @@ export const SET_NOTE = 'SET_NOTE';
 export const CONFIG_USER = 'CONFIG_USER';
 export const SET_HOST_JOINED = 'SET_HOST_JOINED';
 export const RESET_STATE = 'RESET_STATE';
+export const ADD_RESOURCES = 'ADD_RESOURCES';
 export const SET_NOTE_CONTENT = 'SET_NOTE_CONTENT';
 
 export interface UserConfig {
@@ -71,6 +72,15 @@ function setNoteContent(content: string): Action {
   };
 }
 
+function addResources(resources: Resource[]) {
+  return {
+    type: ADD_RESOURCES,
+    payload: {
+      resources
+    }
+  };
+}
+
 function setHostJoined(hostJoined: boolean): Action {
   return {
     type: SET_HOST_JOINED,
@@ -115,13 +125,22 @@ function configureUserDetails(userConfig: UserConfig) {
         })
         .then(note => {
           dispatch(setApiStatus({
-            messageType: MessageType.SUCCESS,
+            messageType: MessageType.LOADING,
             status: FOUND,
-            message: 'Found Note! Happy Collaboration!!',
+            message: 'Found Note! Fetching note resources...',
           }));
 
           dispatch(setNoteDetails(note));
           dispatch(setUserDetails(userConfig));
+          return bridge().getNoteResouceListWithBlob(noteId);
+        })
+        .then((resources: Resource[]) => {
+          dispatch(setApiStatus({
+            messageType: MessageType.SUCCESS,
+            status: FOUND,
+            message: 'Successfully fetched content! Happy Collaboration!!',
+          }));
+          dispatch(addResources(resources));
           dispatch(push('/collab'));
         })
         .catch(err => {
@@ -160,4 +179,4 @@ function handleHostStatusChange(hostJoined: boolean) {
   };
 }
 
-export { setUserDetails, setApiStatus, setNoteDetails, setNoteContent, resetState, configureUserDetails, handleHostStatusChange };
+export { setUserDetails, setApiStatus, setNoteDetails, setNoteContent, addResources, resetState, configureUserDetails, handleHostStatusChange };

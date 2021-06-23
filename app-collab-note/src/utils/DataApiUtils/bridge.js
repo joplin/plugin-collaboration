@@ -53,7 +53,7 @@ class Bridge {
     return `http://127.0.0.1:${this.clipperServerPort_}`;
   }
 
-  async clipperApiExec(method, path, query, body) {
+  async clipperApiExec(method, path, query, body, responseType) {
     if (!this.clipperServerPort_ || this.clipperServerPortStatus_ !== FOUND) throw new Error('Clipper Server not found!');
 
     const baseUrl = this.clipperServerBaseUrl();
@@ -88,6 +88,11 @@ class Bridge {
       throw new Error(msg);
     }
 
+    if(responseType === 'blob') {
+      const blob = await response.blob();
+      return blob;
+    }
+
     const json = await response.json();
     return json;
   }
@@ -101,6 +106,29 @@ class Bridge {
   async getNote(id, fields = []) {
     if (!id) throw new Error('Cannot get a note without id');
     return this.clipperApiExec('GET', `notes/${id}`, { fields: fields.join(',') });
+  }
+
+  async getNoteResouceListWithBlob(noteId) {
+    if (!noteId) throw new Error('Cannot get resource list without note id');
+    const resp = await this.clipperApiExec('GET', `notes/${noteId}/resources`, {});
+
+    const resourceList = resp.items || [];
+    for(const i in resourceList) {
+      resourceList[i].blob = null;
+      try {
+        resourceList[i].blob = await this.getResouceFile(resourceList[i].id);  
+      }
+      catch(error) {
+        console.warn(`Error while fetching resource file: ${error.message}`);
+      }
+    }
+    
+    return resourceList;
+  }
+
+  async getResouceFile(resourceId) {
+    if (!resourceId) throw new Error('Cannot get resource file without resource id');
+    return this.clipperApiExec('GET', `/resources/${resourceId}/file`, {}, null, 'blob');
   }
 }
 

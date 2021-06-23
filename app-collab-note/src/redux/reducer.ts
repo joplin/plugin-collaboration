@@ -4,7 +4,7 @@ import { History } from 'history';
 
 import {
   Action,
-  ADD_RESOURCE,
+  ADD_RESOURCES,
   CONFIG_USER,
   RESET_STATE,
   SET_API_STATUS,
@@ -58,6 +58,16 @@ function reducer(state = initialState.app, action: Action) {
   }
   case RESET_STATE: {
     return { ...initialState.app };
+  }
+  case ADD_RESOURCES: {
+    const { resources } = action.payload;
+    const newResources = JSON.parse(JSON.stringify(state.resources));
+
+    for(const resource of resources) {
+      newResources[resource.id] = resource;
+    }
+
+    return { ...state, resources: newResources };
   }
   }
 
