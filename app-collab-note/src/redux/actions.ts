@@ -10,6 +10,7 @@ export const SET_NOTE = 'SET_NOTE';
 export const CONFIG_USER = 'CONFIG_USER';
 export const SET_HOST_JOINED = 'SET_HOST_JOINED';
 export const RESET_STATE = 'RESET_STATE';
+export const SET_NOTE_CONTENT = 'SET_NOTE_CONTENT';
 
 export interface UserConfig {
   username: string,
@@ -57,6 +58,15 @@ function setNoteDetails(note: Note): Action {
     type: SET_NOTE,
     payload: {
       note
+    }
+  };
+}
+
+function setNoteContent(content: string): Action {
+  return {
+    type: SET_NOTE_CONTENT,
+    payload: {
+      content
     }
   };
 }
@@ -150,4 +160,4 @@ function handleHostStatusChange(hostJoined: boolean) {
   };
 }
 
-export { setUserDetails, setApiStatus, setNoteDetails, resetState, configureUserDetails, handleHostStatusChange };
+export { setUserDetails, setApiStatus, setNoteDetails, setNoteContent, resetState, configureUserDetails, handleHostStatusChange };

@@ -10,9 +10,9 @@ import { connect } from 'react-redux';
 
 interface Props {
   onEditorMount: (editor: CodeMirror.Editor) => void;
-  editorConfig?: CodeMirror.EditorConfiguration;
-  containerStyle: React.CSSProperties;
   isReadOnly: boolean;
+  editorConfig?: CodeMirror.EditorConfiguration;
+  containerStyle?: React.CSSProperties;
 }
 
 interface State {

@@ -4,11 +4,13 @@ import { History } from 'history';
 
 import {
   Action,
+  ADD_RESOURCE,
   CONFIG_USER,
   RESET_STATE,
   SET_API_STATUS,
   SET_HOST_JOINED,
   SET_NOTE,
+  SET_NOTE_CONTENT,
   UserConfig,
 } from './actions';
 import { initialState } from './configStore';
@@ -35,6 +37,13 @@ function reducer(state = initialState.app, action: Action) {
       const newState = { ...state, note };
       return newState;
     }
+    break;
+  }
+  case SET_NOTE_CONTENT: {
+    const { content } = action.payload;
+    let note = state.note || {};
+    note = { ...note, body: content};
+    return { ...state, note };
     break;
   }
   case SET_API_STATUS: {
