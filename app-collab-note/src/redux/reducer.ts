@@ -61,13 +61,8 @@ function reducer(state = initialState.app, action: Action) {
   }
   case ADD_RESOURCES: {
     const { resources } = action.payload;
-    const newResources = JSON.parse(JSON.stringify(state.resources));
 
-    for(const resource of resources) {
-      newResources[resource.id] = resource;
-    }
-
-    return { ...state, resources: newResources };
+    return { ...state, resources };
   }
   }
 

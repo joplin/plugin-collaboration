@@ -1,3 +1,4 @@
+import { Resource } from 'utils/types';
 import { CodemirrorBinding } from 'y-codemirror';
 import { WebrtcProvider } from 'y-webrtc';
 import * as Y from 'yjs';
@@ -97,6 +98,13 @@ class YUtils {
 
       });
     }
+
+    this.resources?.observe((event, transaction) => {
+      if(!transaction.local) {
+        const resources = Array.from(this.resources?.values() || []);
+        this.emit(SessionEvents.ResourcesChanged, [resources]);
+      }
+    });
   }
 
   get yText() {
@@ -105,6 +113,10 @@ class YUtils {
 
   get props() {
     return this.yDoc?.getMap('session-props');
+  }
+
+  get resources(): Y.Map<Resource> | undefined {
+    return this.yDoc?.getMap('resourceBlobMap');
   }
 
   on(event: SessionEvents, callback: callbackType) {
@@ -146,6 +158,17 @@ class YUtils {
     }
 
     return false;
+  }
+
+  updateResources(resources: Resource[]) {
+    if(this.resources) {
+      for(const i in resources) {
+        if(this.resources.has(resources[i].id))
+          continue;
+        this.resources.set(resources[i].id, resources[i]);
+      }
+      console.log(this.resources);
+    }
   }
 
   setEditor(editor: CodeMirror.Editor) {

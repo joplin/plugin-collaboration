@@ -5,9 +5,9 @@ import CodeMirror from 'codemirror';
 
 import { yUtils } from 'utils/WebRTCUtils/y-utils';
 import Editor from 'components/Editor';
-import { Note } from 'utils/types';
+import { Note, Resource } from 'utils/types';
 import { Redirect } from 'react-router';
-import { handleHostStatusChange, setNoteContent } from 'redux/actions';
+import { addResources, handleHostStatusChange, setNoteContent } from 'redux/actions';
 import SessionEvents from 'utils/WebRTCUtils/sessionEvents';
 import { DispatchType } from 'redux/store';
 import Preview from 'components/Preview';
@@ -18,8 +18,10 @@ interface Props {
   note: Note;
   username: string;
   hostJoined: boolean;
+  resources: Resource[];
   setHostJoined: (hostJoined: boolean) => void;
   setNoteContent: (note: string) => void;
+  addResources: (resources: Resource[]) => void;
 }
 
 const Container = styled.div`
@@ -47,13 +49,17 @@ class CollabNote extends Component<Props> {
 
   constructor(props: Props) {
     super(props);
-    const { isHost, roomId, username, setHostJoined } = props;
+    const { isHost, roomId, username, resources, setHostJoined } = props;
     yUtils().init(roomId, isHost, username);
     if (!isHost) {
       setHostJoined(yUtils().didHostJoin());
       yUtils().on(SessionEvents.HostJoined, this.handleHostJoined);
       yUtils().on(SessionEvents.HostLeft, this.handleHostLeft);
     }
+    else {
+      yUtils().updateResources(resources);
+    }
+    yUtils().on(SessionEvents.ResourcesChanged, this.handleResourceChanged);
   }
 
   handleHostJoined = () => {
@@ -73,6 +79,10 @@ class CollabNote extends Component<Props> {
     this.editor?.clearHistory();
     this.editor?.setValue('');
   };
+
+  handleResourceChanged = (resources: Resource[]) => {
+    this.props.addResources(resources);
+  }
 
   onEditorMount = (editor: CodeMirror.Editor) => {
     const { isHost, note } = this.props;
@@ -109,13 +119,14 @@ class CollabNote extends Component<Props> {
 }
 
 const mapStateToProps = (state: any) => {
-  const { isHost, roomId, note, username, hostJoined } = state.app;
+  const { isHost, roomId, note, username, hostJoined, resources } = state.app;
   return {
     isHost,
     roomId,
     note,
     username,
     hostJoined,
+    resources
   };
 };
 
@@ -127,6 +138,9 @@ const mapDispatchToProps = (dispatch: DispatchType) => {
     setNoteContent: (content: string) => {
       dispatch(setNoteContent(content));
     },
+    addResources: (resources: Resource[]) => {
+      dispatch(addResources(resources));
+    }
   };
 };
 

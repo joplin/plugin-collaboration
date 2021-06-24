@@ -114,9 +114,9 @@ class Bridge {
 
     const resourceList = resp.items || [];
     for(const i in resourceList) {
-      resourceList[i].blob = null;
       try {
-        resourceList[i].blob = await this.getResouceFile(resourceList[i].id);  
+        const blob = await this.getResouceFile(resourceList[i].id);
+        resourceList[i].dataURI = await this.getDataURI(blob);
       }
       catch(error) {
         console.warn(`Error while fetching resource file: ${error.message}`);
@@ -129,6 +129,15 @@ class Bridge {
   async getResouceFile(resourceId) {
     if (!resourceId) throw new Error('Cannot get resource file without resource id');
     return this.clipperApiExec('GET', `/resources/${resourceId}/file`, {}, null, 'blob');
+  }
+
+  getDataURI(blob) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
   }
 }
 

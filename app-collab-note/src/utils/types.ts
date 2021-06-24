@@ -7,5 +7,5 @@ export interface Note {
 export interface Resource {
   id: string;
   title: string;
-  blob: Blob | null;
+  dataURI: string;
 }

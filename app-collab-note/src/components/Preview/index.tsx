@@ -1,24 +1,33 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { render } from 'utils/MDUtils/mdToHtml';
+import { Resource } from 'utils/types';
 import './Preview.css';
 
 interface Props {
   markdown: string;
+  resources: Resource[];
 }
 
-function Preview({ markdown }: Props) {
+function Preview({ markdown, resources }: Props) {
+  const [html, setHtml] = useState('');
+
+  useEffect(() => {
+    setHtml(render(markdown, resources));
+  }, [markdown, resources]);
+
   return (
     <div dangerouslySetInnerHTML={{
-      __html: render(markdown)
+      __html: html
     }}></div>
   );
 }
 
 const mapStateToProps = (state: any) => {
-  const { note } = state.app;
+  const { note, resources } = state.app;
   return {
     markdown: note?.body || '',
+    resources: resources,
   };
 };
 

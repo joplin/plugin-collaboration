@@ -16,7 +16,7 @@ export const initialState = {
     noteId: null,
     roomId: null,
     note: null,
-    resources: {},
+    resources: [],
   }
 };
 
