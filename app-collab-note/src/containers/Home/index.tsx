@@ -6,7 +6,8 @@ import { connect } from 'react-redux';
 import HostForm from 'components/Forms/HostForm';
 import JoinForm from 'components/Forms/JoinForm';
 import { configureUserDetails } from 'redux/actions';
-import { UserConfig, resetState } from 'redux/actions';
+import { resetState } from 'redux/actions';
+import { UserConfig, Action } from 'redux/types';
 import { DispatchType } from 'redux/store';
 
 const Container = styled.div`
@@ -74,7 +75,7 @@ class Home extends React.Component<Props, State> {
 
 const mapDispatchToProps = (dispatch: DispatchType) => {
   return {
-    dispatch: (action: any) => { dispatch(action); }
+    dispatch: (action: Action) => { dispatch(action); }
   };
 };
 

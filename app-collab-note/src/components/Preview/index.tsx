@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
+import { AppState } from 'redux/types';
 import { render } from 'utils/MDUtils/mdToHtml';
 import { Resource } from 'utils/types';
 import './Preview.css';
@@ -23,7 +24,7 @@ function Preview({ markdown, resources }: Props) {
   );
 }
 
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: { app: AppState }) => {
   const { note, resources } = state.app;
   return {
     markdown: note?.body || '',

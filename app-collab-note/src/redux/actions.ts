@@ -4,6 +4,7 @@ import { Note, Resource } from 'utils/types';
 import { bridge } from 'utils/DataApiUtils/bridge';
 import { FOUND, SEARCHING } from 'utils/DataApiUtils/clipperPortStatus';
 import { DispatchType, GetStateType } from './store';
+import { ApiStatus, MessageType, UserConfig, Action } from './types';
 
 export const SET_API_STATUS = 'SET_API_STATUS';
 export const SET_NOTE = 'SET_NOTE';
@@ -12,31 +13,6 @@ export const SET_HOST_JOINED = 'SET_HOST_JOINED';
 export const RESET_STATE = 'RESET_STATE';
 export const ADD_RESOURCES = 'ADD_RESOURCES';
 export const SET_NOTE_CONTENT = 'SET_NOTE_CONTENT';
-
-export interface UserConfig {
-  username: string,
-  isHost: boolean,
-  noteId?: string,
-  roomId: string,
-  token?: string
-}
-
-export enum MessageType {
-  LOADING = 'LOADING',
-  ERROR = 'ERROR',
-  SUCCESS = 'SUCCESS',
-}
-
-export interface ApiStatus {
-  messageType: MessageType,
-  status?: string,
-  message: string,
-}
-
-export interface Action {
-  type: string,
-  payload: any
-}
 
 function setApiStatus(apiStatus: ApiStatus | null): Action {
   return {
@@ -72,7 +48,7 @@ function setNoteContent(content: string): Action {
   };
 }
 
-function addResources(resources: Resource[]) {
+function addResources(resources: Resource[]): Action {
   return {
     type: ADD_RESOURCES,
     payload: {

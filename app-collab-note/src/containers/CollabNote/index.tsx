@@ -11,11 +11,12 @@ import { addResources, handleHostStatusChange, setNoteContent } from 'redux/acti
 import SessionEvents from 'utils/WebRTCUtils/sessionEvents';
 import { DispatchType } from 'redux/store';
 import Preview from 'components/Preview';
+import { AppState } from 'redux/types';
 
 interface Props {
   isHost: boolean;
   roomId: string;
-  note: Note;
+  note: Note | null;
   username: string;
   hostJoined: boolean;
   resources: Resource[];
@@ -32,14 +33,17 @@ const Container = styled.div`
   margin-left: auto;
   box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.06), 0 2px 5px 0 rgba(0, 0, 0, 0.2);
 
-  div {
+  >div {
     flex: 1;
+    width: 50%;
+  }
+
+  p { 
+    word-wrap: break-word;
   }
 `;
 
 const PreviewContainer = styled.div`
-  flex: 1;
-  width: 50%;
   margin-left: 10px;
   overflow-y: auto;
 `;
@@ -89,7 +93,7 @@ class CollabNote extends Component<Props> {
     yUtils().setEditor(editor);
     editor.on('change', this.handleEditorContentChange);
     editor.focus();
-    if (isHost) {
+    if (isHost && note) {
       editor.setValue(note.body);
     }
     this.editor = editor;
@@ -118,13 +122,13 @@ class CollabNote extends Component<Props> {
   }
 }
 
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: { app: AppState }) => {
   const { isHost, roomId, note, username, hostJoined, resources } = state.app;
   return {
     isHost,
-    roomId,
+    roomId: roomId || '',
     note,
-    username,
+    username: username || '',
     hostJoined,
     resources
   };

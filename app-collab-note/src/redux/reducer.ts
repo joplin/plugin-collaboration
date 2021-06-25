@@ -3,7 +3,6 @@ import { combineReducers, Reducer } from 'redux';
 import { History } from 'history';
 
 import {
-  Action,
   ADD_RESOURCES,
   CONFIG_USER,
   RESET_STATE,
@@ -11,8 +10,8 @@ import {
   SET_HOST_JOINED,
   SET_NOTE,
   SET_NOTE_CONTENT,
-  UserConfig,
 } from './actions';
+import { Action, UserConfig } from './types';
 import { initialState } from './configStore';
 
 function reducer(state = initialState.app, action: Action) {

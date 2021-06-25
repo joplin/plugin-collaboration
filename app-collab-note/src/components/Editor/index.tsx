@@ -7,6 +7,7 @@ import 'codemirror/mode/markdown/markdown';
 
 import './Editor.css';
 import { connect } from 'react-redux';
+import { AppState } from 'redux/types';
 
 interface Props {
   onEditorMount: (editor: CodeMirror.Editor) => void;
@@ -63,7 +64,7 @@ class Editor extends Component<Props, State> {
   }
 }
 
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: { app: AppState }) => {
   const { isHost, hostJoined } = state.app;
   return {
     isReadOnly: (!isHost && !hostJoined)

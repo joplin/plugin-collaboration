@@ -1,14 +1,15 @@
 import { Resource } from 'utils/types';
+import MarkdownIt from 'markdown-it';
 
-function plugin(resources: Resource[]) {
+function plugin(resources: Resource[]): (markdownIt: MarkdownIt) => void {
 
   const resourceMap = new Map();
   resources.forEach(resource => {
     resourceMap.set(resource.id, resource.dataURI);
   });
 
-  function plugin(markdownIt: any) {
-    const defaultRender = markdownIt.renderer.rules.image;
+  function plugin(markdownIt: MarkdownIt) {
+    const defaultRender = markdownIt.renderer.rules.image as any;
 
     function getAttr(attrs: string[][], name: string) {
       for(const i in attrs) {
@@ -30,7 +31,7 @@ function plugin(resources: Resource[]) {
       if (src.startsWith(':/')) {
         const dataUri = resourceMap.get(src.substring(2));
         if(dataUri) {
-          return `<img src=${dataUri} title=${title}/>`;
+          return `<img src="${dataUri}" title="${title}" style="max-width: 100%"/>`;
         }
       }
       

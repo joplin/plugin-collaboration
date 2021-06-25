@@ -3,7 +3,7 @@ import loader from './icons/loader.svg';
 import error from './icons/error.svg';
 import success from './icons/success.svg';
 import styled from 'styled-components';
-import { MessageType } from 'redux/actions';
+import { MessageType, AppState } from 'redux/types';
 import { connect } from 'react-redux';
 
 const Container = styled.div`
@@ -25,8 +25,8 @@ const Image = styled.img`
 `;
 
 interface Props {
-  message: string;
-  messageType: string;
+  message: string | undefined;
+  messageType: string | undefined;
   showStatus: boolean;
 }
 
@@ -57,7 +57,7 @@ class StatusBar extends Component<Props> {
   }
 }
 
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: { app: AppState }) => {
   const { apiStatus } = state.app;
   return {
     messageType: apiStatus?.messageType,
