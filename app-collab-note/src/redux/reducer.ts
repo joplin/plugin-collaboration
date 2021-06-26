@@ -3,14 +3,15 @@ import { combineReducers, Reducer } from 'redux';
 import { History } from 'history';
 
 import {
-  Action,
+  ADD_RESOURCES,
   CONFIG_USER,
   RESET_STATE,
   SET_API_STATUS,
   SET_HOST_JOINED,
   SET_NOTE,
-  UserConfig,
+  SET_NOTE_CONTENT,
 } from './actions';
+import { Action, UserConfig } from './types';
 import { initialState } from './configStore';
 
 function reducer(state = initialState.app, action: Action) {
@@ -37,6 +38,13 @@ function reducer(state = initialState.app, action: Action) {
     }
     break;
   }
+  case SET_NOTE_CONTENT: {
+    const { content } = action.payload;
+    let note = state.note || {};
+    note = { ...note, body: content};
+    return { ...state, note };
+    break;
+  }
   case SET_API_STATUS: {
     const { apiStatus } = action.payload;
     const newState = { ...state, apiStatus };
@@ -49,6 +57,11 @@ function reducer(state = initialState.app, action: Action) {
   }
   case RESET_STATE: {
     return { ...initialState.app };
+  }
+  case ADD_RESOURCES: {
+    const { resources } = action.payload;
+
+    return { ...state, resources };
   }
   }
 

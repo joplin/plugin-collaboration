@@ -1,40 +1,18 @@
 import { push } from 'connected-react-router';
 
-import { Note } from 'utils/types';
+import { Note, Resource } from 'utils/types';
 import { bridge } from 'utils/DataApiUtils/bridge';
 import { FOUND, SEARCHING } from 'utils/DataApiUtils/clipperPortStatus';
 import { DispatchType, GetStateType } from './store';
+import { ApiStatus, MessageType, UserConfig, Action } from './types';
 
 export const SET_API_STATUS = 'SET_API_STATUS';
 export const SET_NOTE = 'SET_NOTE';
 export const CONFIG_USER = 'CONFIG_USER';
 export const SET_HOST_JOINED = 'SET_HOST_JOINED';
 export const RESET_STATE = 'RESET_STATE';
-
-export interface UserConfig {
-  username: string,
-  isHost: boolean,
-  noteId?: string,
-  roomId: string,
-  token?: string
-}
-
-export enum MessageType {
-  LOADING = 'LOADING',
-  ERROR = 'ERROR',
-  SUCCESS = 'SUCCESS',
-}
-
-export interface ApiStatus {
-  messageType: MessageType,
-  status?: string,
-  message: string,
-}
-
-export interface Action {
-  type: string,
-  payload: any
-}
+export const ADD_RESOURCES = 'ADD_RESOURCES';
+export const SET_NOTE_CONTENT = 'SET_NOTE_CONTENT';
 
 function setApiStatus(apiStatus: ApiStatus | null): Action {
   return {
@@ -57,6 +35,24 @@ function setNoteDetails(note: Note): Action {
     type: SET_NOTE,
     payload: {
       note
+    }
+  };
+}
+
+function setNoteContent(content: string): Action {
+  return {
+    type: SET_NOTE_CONTENT,
+    payload: {
+      content
+    }
+  };
+}
+
+function addResources(resources: Resource[]): Action {
+  return {
+    type: ADD_RESOURCES,
+    payload: {
+      resources
     }
   };
 }
@@ -105,13 +101,22 @@ function configureUserDetails(userConfig: UserConfig) {
         })
         .then(note => {
           dispatch(setApiStatus({
-            messageType: MessageType.SUCCESS,
+            messageType: MessageType.LOADING,
             status: FOUND,
-            message: 'Found Note! Happy Collaboration!!',
+            message: 'Found Note! Fetching note resources...',
           }));
 
           dispatch(setNoteDetails(note));
           dispatch(setUserDetails(userConfig));
+          return bridge().getNoteResouceListWithBlob(noteId);
+        })
+        .then((resources: Resource[]) => {
+          dispatch(setApiStatus({
+            messageType: MessageType.SUCCESS,
+            status: FOUND,
+            message: 'Successfully fetched content! Happy Collaboration!!',
+          }));
+          dispatch(addResources(resources));
           dispatch(push('/collab'));
         })
         .catch(err => {
@@ -150,4 +155,4 @@ function handleHostStatusChange(hostJoined: boolean) {
   };
 }
 
-export { setUserDetails, setApiStatus, setNoteDetails, resetState, configureUserDetails, handleHostStatusChange };
+export { setUserDetails, setApiStatus, setNoteDetails, setNoteContent, addResources, resetState, configureUserDetails, handleHostStatusChange };
