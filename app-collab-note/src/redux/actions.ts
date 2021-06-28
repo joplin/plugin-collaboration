@@ -86,7 +86,7 @@ function configureUserDetails(userConfig: UserConfig) {
         message: 'Searching for Joplin Data API',
       }));
 
-      bridge().init(token)
+      bridge.init(token)
         .then(() => {
           dispatch(setApiStatus({
             messageType: MessageType.SUCCESS,
@@ -94,7 +94,7 @@ function configureUserDetails(userConfig: UserConfig) {
             message: 'Found Joplin Data API',
           }));
 
-          return bridge().getNote(noteId, ['id', 'title', 'body'])
+          return bridge.getNote(noteId, ['id', 'title', 'body'])
             .catch(() => {
               throw new Error('Note not found!');
             });
@@ -108,7 +108,7 @@ function configureUserDetails(userConfig: UserConfig) {
 
           dispatch(setNoteDetails(note));
           dispatch(setUserDetails(userConfig));
-          return bridge().getNoteResouceListWithBlob(noteId);
+          return bridge.getNoteResouceList(noteId);
         })
         .then((resources: Resource[]) => {
           dispatch(setApiStatus({
@@ -155,4 +155,4 @@ function handleHostStatusChange(hostJoined: boolean) {
   };
 }
 
-export { setUserDetails, setApiStatus, setNoteDetails, setNoteContent, addResources, resetState, configureUserDetails, handleHostStatusChange };
+export { setUserDetails, setApiStatus, setNoteDetails, setNoteContent, addResources, resetState, configureUserDetails, handleHostStatusChange, setHostJoined };

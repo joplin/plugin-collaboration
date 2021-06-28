@@ -8,7 +8,6 @@ import JoinForm from 'components/Forms/JoinForm';
 import { configureUserDetails } from 'redux/actions';
 import { resetState } from 'redux/actions';
 import { UserConfig, Action } from 'redux/types';
-import { DispatchType } from 'redux/store';
 
 const Container = styled.div`
   width: fit-content;
@@ -73,7 +72,7 @@ class Home extends React.Component<Props, State> {
   }
 }
 
-const mapDispatchToProps = (dispatch: DispatchType) => {
+const mapDispatchToProps = (dispatch: any) => {
   return {
     dispatch: (action: Action) => { dispatch(action); }
   };

@@ -9,7 +9,6 @@ import { Note, Resource } from 'utils/types';
 import { Redirect } from 'react-router';
 import { addResources, handleHostStatusChange, setNoteContent } from 'redux/actions';
 import SessionEvents from 'utils/WebRTCUtils/sessionEvents';
-import { DispatchType } from 'redux/store';
 import Preview from 'components/Preview';
 import { AppState } from 'redux/types';
 
@@ -134,7 +133,7 @@ const mapStateToProps = (state: { app: AppState }) => {
   };
 };
 
-const mapDispatchToProps = (dispatch: DispatchType) => {
+const mapDispatchToProps = (dispatch: any) => {
   return {
     setHostJoined: (hostJoined: boolean) => {
       dispatch(handleHostStatusChange(hostJoined));
