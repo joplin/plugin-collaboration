@@ -109,10 +109,12 @@ async function getNoteResouceList(noteId) {
   if (!noteId) throw new Error('Cannot get resource list without note id');
   let resourceList = [];
   let hasMore = true;
+  let page = 1;
   while(hasMore) {
-    const resp = await clipperApiExec('GET', `notes/${noteId}/resources`, {});
+    const resp = await clipperApiExec('GET', `notes/${noteId}/resources`, { page });
     resourceList = [...resourceList, ...resp.items];
     hasMore = resp.has_more;
+    page++;
   }
 
   for(const i in resourceList) {
