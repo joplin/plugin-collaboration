@@ -35,6 +35,7 @@ const Container = styled.div`
   >div {
     flex: 1;
     width: 50%;
+    padding: 0 10px;
   }
 
   p { 
@@ -43,7 +44,6 @@ const Container = styled.div`
 `;
 
 const PreviewContainer = styled.div`
-  margin-left: 10px;
   overflow-y: auto;
 `;
 

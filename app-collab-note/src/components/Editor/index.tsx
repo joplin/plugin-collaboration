@@ -42,7 +42,6 @@ class Editor extends Component<Props, State> {
         indentWithTabs: true,
         indentUnit: 4,
         spellcheck: true,
-        theme: 'material',
       }, editorConfig);
 
       this.editor = CodeMirror(editorParentRef.current, config);

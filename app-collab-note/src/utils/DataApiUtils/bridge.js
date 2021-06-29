@@ -1,9 +1,9 @@
 import { FOUND, INVALID_TOKEN, SEARCHING, NOT_FOUND } from './clipperPortStatus';
 import { config } from './config';
 
-let clipperServerPortStatus_ = null;
-let clipperServerPort_ = null;
-let authToken_ = null;
+let clipperServerPortStatus_;
+let clipperServerPort_;
+let authToken_;
 
 async function init(authToken) {
   const initPort = config().startPort;
@@ -107,9 +107,14 @@ async function getNote(id, fields = []) {
 
 async function getNoteResouceList(noteId) {
   if (!noteId) throw new Error('Cannot get resource list without note id');
-  const resp = await clipperApiExec('GET', `notes/${noteId}/resources`, {});
+  let resourceList = [];
+  let hasMore = true;
+  while(hasMore) {
+    const resp = await clipperApiExec('GET', `notes/${noteId}/resources`, {});
+    resourceList = [...resourceList, ...resp.items];
+    hasMore = resp.has_more;
+  }
 
-  const resourceList = resp.items || [];
   for(const i in resourceList) {
     try {
       const blob = await getResouceFile(resourceList[i].id);
