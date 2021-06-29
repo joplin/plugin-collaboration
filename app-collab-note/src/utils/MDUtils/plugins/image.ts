@@ -1,5 +1,6 @@
 import { Resource } from 'utils/types';
 import MarkdownIt from 'markdown-it';
+import imageNotFound from './image-not-found.svg';
 
 function plugin(resources: Resource[]): (markdownIt: MarkdownIt) => void {
 
@@ -26,12 +27,13 @@ function plugin(resources: Resource[]): (markdownIt: MarkdownIt) => void {
       const src = getAttr(token.attrs, 'src');
       const title = getAttr(token.attrs, 'title');
 
-      console.log({ token });
-
       if (src.startsWith(':/')) {
         const dataUri = resourceMap.get(src.substring(2));
         if(dataUri) {
           return `<img src="${dataUri}" title="${title}" style="max-width: 100%"/>`;
+        }
+        else {
+          return `<img src="${imageNotFound}" title="${title}" style="max-width: 50px"/>`;
         }
       }
       
