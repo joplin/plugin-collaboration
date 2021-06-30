@@ -1,150 +1,152 @@
 import { FOUND, INVALID_TOKEN, SEARCHING, NOT_FOUND } from './clipperPortStatus';
 import { config } from './config';
 
-class Bridge {
+let clipperServerPortStatus_;
+let clipperServerPort_;
+let authToken_;
 
-  async init(authToken) {
-    const initPort = config().startPort;
+async function init(authToken) {
+  const initPort = config().startPort;
 
-    this.clipperServerPortStatus_ = NOT_FOUND;
-    this.clipperServerPort_ = null;
-    this.authToken = () => authToken;
+  clipperServerPortStatus_ = NOT_FOUND;
+  clipperServerPort_ = null;
+  authToken_ = authToken;
 
-    await this.findClipperServerPort(initPort);
-
-  }
-
-  async findClipperServerPort(initPort) {
-    let port = initPort;
-
-    this.clipperServerPortStatus_ = SEARCHING;
-    for (let i = 0; i < 10; i++) {
-      try {
-        let response = await fetch(`http://127.0.0.1:${port}/ping`);
-        const text = await response.text();
-        if (text.trim() === 'JoplinClipperServer') {
-          this.clipperServerPortStatus_ = FOUND;
-          this.clipperServerPort_ = port;
-
-          const token = this.authToken();
-          return this.clipperApiExec('GET', 'notes', { token })
-            .catch(() => {
-              this.clipperServerPortStatus_ = INVALID_TOKEN;
-              throw new Error('Invalid Token');
-            });
-        }
-      } catch (error) {
-        console.log(error.message);
-      }
-
-      port += 1;
-    }
-
-    this.clipperServerPortStatus_ = NOT_FOUND;
-    throw new Error('Clipper Server not found!');
-  }
-
-  get clipperServerPortStatus() {
-    return this.clipperServerPortStatus_ || NOT_FOUND;
-  }
-
-  clipperServerBaseUrl() {
-    if (!this.clipperServerPort_ || this.clipperServerPortStatus_ !== FOUND) return;
-    return `http://127.0.0.1:${this.clipperServerPort_}`;
-  }
-
-  async clipperApiExec(method, path, query, body, responseType) {
-    if (!this.clipperServerPort_ || this.clipperServerPortStatus_ !== FOUND) throw new Error('Clipper Server not found!');
-
-    const baseUrl = this.clipperServerBaseUrl();
-
-    if (!baseUrl) throw new Error('Missing Data API URL!!');
-
-    const fetchOptions = {
-      method: method,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
-
-    if (body) fetchOptions.body = typeof body === 'string' ? body : JSON.stringify(body);
-
-    query.token = this.authToken();
-
-    let queryString = '';
-    if (query) {
-      const s = [];
-      for (const k in query) {
-        if (!Object.prototype.hasOwnProperty.call(query, k)) continue;
-        s.push(`${encodeURIComponent(k)}=${encodeURIComponent(query[k])}`);
-      }
-      queryString = s.join('&');
-      if (queryString) queryString = `?${queryString}`;
-    }
-
-    const response = await fetch(`${baseUrl}/${path}${queryString}`, fetchOptions);
-    if (!response.ok) {
-      const msg = await response.text();
-      throw new Error(msg);
-    }
-
-    if(responseType === 'blob') {
-      const blob = await response.blob();
-      return blob;
-    }
-
-    const json = await response.json();
-    return json;
-  }
-
-  async updateNoteContent(note) {
-    const { id, body } = note;
-    if (!id) throw new Error('Cannot update a note without id');
-    return this.clipperApiExec('PUT', `notes/${id}`, {}, { body });
-  }
-
-  async getNote(id, fields = []) {
-    if (!id) throw new Error('Cannot get a note without id');
-    return this.clipperApiExec('GET', `notes/${id}`, { fields: fields.join(',') });
-  }
-
-  async getNoteResouceListWithBlob(noteId) {
-    if (!noteId) throw new Error('Cannot get resource list without note id');
-    const resp = await this.clipperApiExec('GET', `notes/${noteId}/resources`, {});
-
-    const resourceList = resp.items || [];
-    for(const i in resourceList) {
-      try {
-        const blob = await this.getResouceFile(resourceList[i].id);
-        resourceList[i].dataURI = await this.getDataURI(blob);
-      }
-      catch(error) {
-        console.warn(`Error while fetching resource file: ${error.message}`);
-      }
-    }
-    
-    return resourceList;
-  }
-
-  async getResouceFile(resourceId) {
-    if (!resourceId) throw new Error('Cannot get resource file without resource id');
-    return this.clipperApiExec('GET', `/resources/${resourceId}/file`, {}, null, 'blob');
-  }
-
-  getDataURI(blob) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = (e) => resolve(reader.result);
-      reader.onerror = reject;
-      reader.readAsDataURL(blob);
-    });
-  }
+  await findClipperServerPort(initPort);
 }
 
-const bridge_ = new Bridge();
+async function findClipperServerPort(initPort) {
+  let port = initPort;
 
-const bridge = function () {
-  return bridge_;
+  clipperServerPortStatus_ = SEARCHING;
+  for (let i = 0; i < 10; i++) {
+    try {
+      let response = await fetch(`http://127.0.0.1:${port}/ping`);
+      const text = await response.text();
+      if (text.trim() === 'JoplinClipperServer') {
+        clipperServerPortStatus_ = FOUND;
+        clipperServerPort_ = port;
+
+        const token = authToken_;
+        return clipperApiExec('GET', 'notes', { token })
+          .catch(() => {
+            clipperServerPortStatus_ = INVALID_TOKEN;
+            throw new Error('Invalid Token');
+          });
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+
+    port += 1;
+  }
+
+  clipperServerPortStatus_ = NOT_FOUND;
+  throw new Error('Clipper Server not found!');
+}
+
+function clipperServerBaseUrl() {
+  if (!clipperServerPort_ || clipperServerPortStatus_ !== FOUND) return;
+  return `http://127.0.0.1:${clipperServerPort_}`;
+}
+
+async function clipperApiExec(method, path, query, body, responseType) {
+  if (!clipperServerPort_ || clipperServerPortStatus_ !== FOUND) throw new Error('Clipper Server not found!');
+
+  const baseUrl = clipperServerBaseUrl();
+
+  if (!baseUrl) throw new Error('Missing Data API URL!!');
+
+  const fetchOptions = {
+    method: method,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+
+  if (body) fetchOptions.body = typeof body === 'string' ? body : JSON.stringify(body);
+
+  query.token = authToken_;
+
+  let queryString = '';
+  if (query) {
+    const s = [];
+    for (const k in query) {
+      if (!Object.prototype.hasOwnProperty.call(query, k)) continue;
+      s.push(`${encodeURIComponent(k)}=${encodeURIComponent(query[k])}`);
+    }
+    queryString = s.join('&');
+    if (queryString) queryString = `?${queryString}`;
+  }
+
+  const response = await fetch(`${baseUrl}/${path}${queryString}`, fetchOptions);
+  if (!response.ok) {
+    const msg = await response.text();
+    throw new Error(msg);
+  }
+
+  if(responseType === 'blob') {
+    const blob = await response.blob();
+    return blob;
+  }
+
+  const json = await response.json();
+  return json;
+}
+
+async function updateNoteContent(note) {
+  const { id, body } = note;
+  if (!id) throw new Error('Cannot update a note without id');
+  return clipperApiExec('PUT', `notes/${id}`, {}, { body });
+}
+
+async function getNote(id, fields = []) {
+  if (!id) throw new Error('Cannot get a note without id');
+  return clipperApiExec('GET', `notes/${id}`, { fields: fields.join(',') });
+}
+
+async function getNoteResouceList(noteId) {
+  if (!noteId) throw new Error('Cannot get resource list without note id');
+  let resourceList = [];
+  let hasMore = true;
+  let page = 1;
+  while(hasMore) {
+    const resp = await clipperApiExec('GET', `notes/${noteId}/resources`, { page });
+    resourceList = [...resourceList, ...resp.items];
+    hasMore = resp.has_more;
+    page++;
+  }
+
+  for(const i in resourceList) {
+    try {
+      const blob = await getResouceFile(resourceList[i].id);
+      resourceList[i].dataURI = await getDataURI(blob);
+    }
+    catch(error) {
+      console.warn(`Error while fetching resource file: ${error.message}`);
+    }
+  }
+  
+  return resourceList;
+}
+
+async function getResouceFile(resourceId) {
+  if (!resourceId) throw new Error('Cannot get resource file without resource id');
+  return clipperApiExec('GET', `/resources/${resourceId}/file`, {}, null, 'blob');
+}
+
+function getDataURI(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
+export const bridge = {
+  init,
+  getNote,
+  updateNoteContent,
+  getNoteResouceList
 };
-
-export { bridge };

@@ -60,9 +60,7 @@ class YUtils {
      * By default it uses the dev signaling servers of Yjs
      */
     this.provider = new WebrtcProvider(id, this.yDoc);
-
     const { awareness } = this.provider;
-
     if(isHost) {
       awareness.setLocalStateField('role', roles.HOST);
     }
@@ -160,15 +158,20 @@ class YUtils {
     return false;
   }
 
+  /**
+   * @todo
+   * Need to find some other way to sync resource files.
+   * Until then commenting below code disables the resource sync without effecting rest of the collaboration.
+   */
   updateResources(resources: Resource[]) {
-    if(this.resources) {
-      for(const i in resources) {
-        if(this.resources.has(resources[i].id))
-          continue;
-        this.resources.set(resources[i].id, resources[i]);
-      }
-      console.log(this.resources);
-    }
+    // if(this.resources) {
+    //   for(const i in resources) {
+    //     if(this.resources.has(resources[i].id))
+    //       continue;
+    //     this.resources.set(resources[i].id, resources[i]);
+    //   }
+    //   console.log(this.resources);
+    // }
   }
 
   setEditor(editor: CodeMirror.Editor) {

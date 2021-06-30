@@ -1,5 +1,6 @@
-.CodeMirror {
-  z-index: 0;
+.CodeMirror-lines {
+  padding-top: 20px;
+  padding-bottom: 400px !important;
 }
 
 

@@ -1,5 +1,5 @@
 import { createBrowserHistory } from 'history';
-import { applyMiddleware, compose, createStore } from 'redux';
+import { applyMiddleware, compose, createStore, Store } from 'redux';
 import { routerMiddleware } from 'connected-react-router';
 import createRootReducer from './reducer';
 import { createLogger } from 'redux-logger';
@@ -20,16 +20,22 @@ export const initialState = {
   }
 };
 
-export default function configureStore(preloadedState = initialState): any {
+export default function configureStore(preloadedState = initialState, isDevMode: boolean): Store<any, any> {
+
+  const middleware = [
+    routerMiddleware(history),
+    thunk,
+  ];
+
+  if(isDevMode) {
+    middleware.push(createLogger());
+  }
+
   const store = createStore(
     createRootReducer(history),
     preloadedState,
     compose(
-      applyMiddleware(
-        routerMiddleware(history),
-        createLogger(),
-        thunk,
-      ),
+      applyMiddleware(...middleware),
     ),
   );
 

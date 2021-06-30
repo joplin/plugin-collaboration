@@ -9,7 +9,6 @@ import { Note, Resource } from 'utils/types';
 import { Redirect } from 'react-router';
 import { addResources, handleHostStatusChange, setNoteContent } from 'redux/actions';
 import SessionEvents from 'utils/WebRTCUtils/sessionEvents';
-import { DispatchType } from 'redux/store';
 import Preview from 'components/Preview';
 import { AppState } from 'redux/types';
 
@@ -36,6 +35,7 @@ const Container = styled.div`
   >div {
     flex: 1;
     width: 50%;
+    padding: 0 10px;
   }
 
   p { 
@@ -44,7 +44,6 @@ const Container = styled.div`
 `;
 
 const PreviewContainer = styled.div`
-  margin-left: 10px;
   overflow-y: auto;
 `;
 
@@ -134,7 +133,7 @@ const mapStateToProps = (state: { app: AppState }) => {
   };
 };
 
-const mapDispatchToProps = (dispatch: DispatchType) => {
+const mapDispatchToProps = (dispatch: any) => {
   return {
     setHostJoined: (hostJoined: boolean) => {
       dispatch(handleHostStatusChange(hostJoined));

@@ -11,10 +11,10 @@ import {
   SET_NOTE,
   SET_NOTE_CONTENT,
 } from './actions';
-import { Action, UserConfig } from './types';
+import { Action, AppState, UserConfig } from './types';
 import { initialState } from './configStore';
 
-function reducer(state = initialState.app, action: Action) {
+export function reducer(state = initialState.app, action: Action): AppState {
 
   switch (action.type) {
   case CONFIG_USER: {
@@ -40,8 +40,8 @@ function reducer(state = initialState.app, action: Action) {
   }
   case SET_NOTE_CONTENT: {
     const { content } = action.payload;
-    let note = state.note || {};
-    note = { ...note, body: content};
+    const note = state.note || { body: content };
+    Object.assign(note, { body: content });
     return { ...state, note };
     break;
   }
