@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import styled from 'styled-components';
 import { connect } from 'react-redux';
@@ -6,8 +6,8 @@ import { connect } from 'react-redux';
 import HostForm from 'components/Forms/HostForm';
 import JoinForm from 'components/Forms/JoinForm';
 import { configureUserDetails } from 'redux/actions';
-import { resetState } from 'redux/actions';
 import { UserConfig, Action } from 'redux/types';
+import { RouteComponentProps } from 'react-router-dom';
 
 const Container = styled.div`
   width: fit-content;
@@ -25,51 +25,53 @@ const Link = styled.a`
   cursor: pointer;
 `;
 
-interface Props {
+interface RouteParams {
+  noteId?: string;
+  token?: string;
+  roomId?: string;
+}
+
+interface Props extends RouteComponentProps<RouteParams> {
   dispatch: any
 }
 
-interface State {
-  isHost: boolean;
-}
-
-class Home extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      isHost: true,
-    };
-    props.dispatch(resetState());
+function Home(props: Props) {
+  let defaultIsHost = false;
+  let defaultUserConfig: any = {};
+  const { token, noteId, roomId } = props.match.params;
+  if(token) {
+    defaultIsHost = true;
+    defaultUserConfig = { token, noteId };
+  }
+  else if(roomId) {
+    defaultUserConfig = { roomId };
   }
 
-  onSubmit = (formData: any) => {
-    const { dispatch } = this.props;
-    const { isHost } = this.state;
+  const [isHost, setIsHost] = useState(defaultIsHost);
+  const [userConfig, setUserConfig] = useState(defaultUserConfig);
+
+  const onSubmit = (formData: any) => {
+    const { dispatch } = props;
     const userConfig = { isHost, ...formData } as UserConfig;
 
     dispatch(configureUserDetails(userConfig));
   };
 
-  changeState = () => {
-    let { isHost } = this.state;
-    isHost = !isHost;
-    this.setState({ isHost: isHost });
+  const changeState = () => {
+    setIsHost((prev) => !prev);
   };
 
-  render() {
-    const { isHost } = this.state;
-    return (
-      <Container>
-        {isHost && <HostForm onSubmit={this.onSubmit} />}
-        {!isHost && <JoinForm onSubmit={this.onSubmit} />}
-        <Option>
-          {isHost && 'Want to join existing room? '}
-          {!isHost && 'Want to host a Joplin Note? '}
-          <Link onClick={this.changeState}>Click here</Link>
-        </Option>
-      </Container>
-    );
-  }
+  return (
+    <Container>
+      {isHost && <HostForm onSubmit={onSubmit} initData={userConfig}/>}
+      {!isHost && <JoinForm onSubmit={onSubmit}  initData={userConfig}/>}
+      <Option>
+        {isHost && 'Want to join existing room? '}
+        {!isHost && 'Want to host a Joplin Note? '}
+        <Link onClick={changeState}>Click here</Link>
+      </Option>
+    </Container>
+  );
 }
 
 const mapDispatchToProps = (dispatch: any) => {

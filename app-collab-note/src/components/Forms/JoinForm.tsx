@@ -5,6 +5,10 @@ import './Form.css';
 
 interface Props {
   onSubmit: (data: any) => void;
+  initData: {
+    username?: string;
+    roomId?: string;
+  }
 }
 
 interface State {
@@ -16,7 +20,8 @@ class JoinForm extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props);
-    this.state = { username: '', roomId: '' };
+    const { username, roomId } = props.initData;
+    this.state = { username: username || '', roomId: roomId || '' };
   }
 
   updateField = (event: { target: any }): void => {
@@ -42,6 +47,7 @@ class JoinForm extends React.Component<Props, State> {
   }
 
   render(): JSX.Element {
+    const { username, roomId } = this.state;
     return (
       <div className="base-container">
         <div className="image">
@@ -55,7 +61,8 @@ class JoinForm extends React.Component<Props, State> {
                 type="text" 
                 name="username" 
                 id="username" 
-                placeholder="Username" 
+                placeholder="Username"
+                value={username}
                 onChange={this.updateField}
               />
             </div>
@@ -65,6 +72,7 @@ class JoinForm extends React.Component<Props, State> {
                 name="roomId"
                 id="roomId"
                 placeholder="Room ID"
+                value={roomId}
                 onChange={this.updateField}
               />
             </div>

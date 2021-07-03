@@ -16,6 +16,8 @@ function App(): JSX.Element {
         <Switch>
           <Route path="/" exact component={Home} />
           <Route path="/collab" exact component={CollabNote} />
+          <Route path="/:roomId" exact component={Home} />
+          <Route path="/:noteId/:token" exact component={Home} />
         </Switch>
       </ConnectedRouter>
       <StatusBar />
