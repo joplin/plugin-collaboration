@@ -17,6 +17,7 @@ export const initialState = {
     roomId: null,
     note: null,
     resources: [],
+    isNoteSaved: true,
   }
 };
 

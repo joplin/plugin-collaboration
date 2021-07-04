@@ -10,4 +10,5 @@ export interface AppState {
   roomId: string | null;
   note: Note | null;
   resources: Resource[];
+  isNoteSaved: boolean;
 }
