@@ -31,15 +31,15 @@ class HostForm extends React.Component<Props, State> {
   updateField = (event: { target: any }): void => {
     const { id, value } = event.target;
     switch(id) {
-    case 'username':
-      this.setState({ username: value });
-      break;
-    case 'noteId':
-      this.setState({ noteId: value });
-      break;
-    case 'token':
-      this.setState({ token: value });
-      break;
+      case 'username':
+        this.setState({ username: value });
+        break;
+      case 'noteId':
+        this.setState({ noteId: value });
+        break;
+      case 'token':
+        this.setState({ token: value });
+        break;
     }
   }
 

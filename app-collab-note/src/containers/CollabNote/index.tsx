@@ -7,7 +7,7 @@ import { yUtils } from 'utils/WebRTCUtils/y-utils';
 import Editor from 'components/Editor';
 import { Note, Resource } from 'utils/types';
 import { Redirect } from 'react-router';
-import { addResources, handleHostStatusChange, setNoteContent } from 'redux/actions';
+import { addResources, handleHostStatusChange, resetState, setNoteContent } from 'redux/actions';
 import SessionEvents from 'utils/WebRTCUtils/sessionEvents';
 import Preview from 'components/Preview';
 import { AppState } from 'redux/types';
@@ -22,6 +22,7 @@ interface Props {
   setHostJoined: (hostJoined: boolean) => void;
   setNoteContent: (note: string) => void;
   addResources: (resources: Resource[]) => void;
+  resetState: () => void;
 }
 
 const Container = styled.div`
@@ -104,6 +105,7 @@ class CollabNote extends Component<Props> {
 
   componentWillUnmount() {
     yUtils().destroy();
+    this.props.resetState();
   }
 
   render() {
@@ -143,6 +145,9 @@ const mapDispatchToProps = (dispatch: any) => {
     },
     addResources: (resources: Resource[]) => {
       dispatch(addResources(resources));
+    },
+    resetState: () => {
+      dispatch(resetState());
     }
   };
 };
