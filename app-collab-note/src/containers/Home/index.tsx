@@ -37,18 +37,18 @@ interface Props extends RouteComponentProps<RouteParams> {
 
 function Home(props: Props) {
   let defaultIsHost = false;
-  let defaultUserConfig: any = {};
+  let userConfig: any = {};
+  
   const { token, noteId, roomId } = props.match.params;
   if(token) {
     defaultIsHost = true;
-    defaultUserConfig = { token, noteId };
+    userConfig = { token, noteId };
   }
   else if(roomId) {
-    defaultUserConfig = { roomId };
+    userConfig = { roomId };
   }
 
   const [isHost, setIsHost] = useState(defaultIsHost);
-  const [userConfig, setUserConfig] = useState(defaultUserConfig);
 
   const onSubmit = (formData: any) => {
     const { dispatch } = props;

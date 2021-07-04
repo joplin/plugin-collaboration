@@ -27,12 +27,12 @@ class JoinForm extends React.Component<Props, State> {
   updateField = (event: { target: any }): void => {
     const { id, value } = event.target;
     switch(id) {
-    case 'username':
-      this.setState({ username: value });
-      break;
-    case 'roomId':
-      this.setState({ roomId: value });
-      break;
+      case 'username':
+        this.setState({ username: value });
+        break;
+      case 'roomId':
+        this.setState({ roomId: value });
+        break;
     }
   }
 
