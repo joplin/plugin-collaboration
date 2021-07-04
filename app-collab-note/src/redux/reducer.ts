@@ -42,7 +42,7 @@ export function reducer(state = initialState.app, action: Action): AppState {
       const { content } = action.payload;
       const note = state.note || { body: content };
       Object.assign(note, { body: content });
-      return { ...state, note, isNoteSaved: false };
+      return { ...state, note };
     }
     case SET_API_STATUS: {
       const { apiStatus } = action.payload;
