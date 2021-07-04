@@ -4,6 +4,11 @@ import './Form.css';
 
 interface Props {
   onSubmit: (data: any) => void;
+  initData: {
+    username?: string;
+    noteId?: string;
+    token?: string;
+  }
 }
 
 interface State {
@@ -15,7 +20,12 @@ class HostForm extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props);
-    this.state = { username: '', noteId: '', token: '' };
+    const {username, noteId, token} = props.initData;
+    this.state = { 
+      username: username || '',
+      noteId: noteId || '',
+      token: token || '',
+    };
   }
 
   updateField = (event: { target: any }): void => {
@@ -44,6 +54,7 @@ class HostForm extends React.Component<Props, State> {
   }
 
   render(): JSX.Element {
+    const { username, noteId, token } = this.state;
     return (
       <div className="base-container">
         <div className="image">
@@ -58,6 +69,7 @@ class HostForm extends React.Component<Props, State> {
                 name="username" 
                 id="username" 
                 placeholder="Username" 
+                value={username}
                 onChange={this.updateField}
               />
             </div>
@@ -67,6 +79,7 @@ class HostForm extends React.Component<Props, State> {
                 name="noteId"
                 id="noteId"
                 placeholder="Note ID"
+                value={noteId}
                 onChange={this.updateField}
               />
             </div>
@@ -76,6 +89,7 @@ class HostForm extends React.Component<Props, State> {
                 name="token"
                 id="token"
                 placeholder="Auth Token"
+                value={token}
                 onChange={this.updateField}
               />
             </div>
