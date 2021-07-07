@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faClipboard } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faClone } from '@fortawesome/free-solid-svg-icons';
 
 import { connect } from 'react-redux';
 import { saveNote } from 'redux/actions';
@@ -59,7 +59,7 @@ function ToolbarItem(props: ToolbarItemProps & { isHost: boolean }) {
   return (
     <Option title={props.label} onClick={props.action}>
       { props.text }
-      <FontAwesomeIcon icon={faSave} size="lg"/>
+      <FontAwesomeIcon icon={props.icon} size="lg"/>
     </Option>
   );
 }
@@ -75,7 +75,7 @@ function Toolbar(props: Props) {
     },
     {
       label: 'copy room ID',
-      icon: faClipboard,
+      icon: faClone,
       text: 'copy room ID',
       onlyHost: false,
       action: () => { props.copyRoomIdToClipboard(); }
