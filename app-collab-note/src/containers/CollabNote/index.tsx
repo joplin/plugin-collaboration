@@ -11,6 +11,7 @@ import { addResources, handleHostStatusChange, resetState, setNoteContent } from
 import SessionEvents from 'utils/WebRTCUtils/sessionEvents';
 import Preview from 'components/Preview';
 import { AppState } from 'redux/types';
+import Toolbar from 'components/Toolbar';
 
 interface Props {
   isHost: boolean;
@@ -27,20 +28,29 @@ interface Props {
 
 const Container = styled.div`
   display: flex;
+  flex-direction: column;
   width: 98%;
-  height: 80vh;
   margin-right: auto;
   margin-left: auto;
   box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.06), 0 2px 5px 0 rgba(0, 0, 0, 0.2);
-
-  >div {
-    flex: 1;
-    width: 50%;
-    padding: 0 10px;
-  }
-
   p { 
     word-wrap: break-word;
+  }
+`;
+
+const ViewContainer = styled.div`
+  display: flex;
+  height: 80vh;
+  padding: 10px 0;
+  >div {
+    width: 0%;
+    flex-grow: 1;
+    padding-left: 10px;
+    border-right: 1px solid rgba(0, 0, 0, 0.06);
+
+    :last-child {
+      border-right: none;
+    }
   }
 `;
 
@@ -114,10 +124,13 @@ class CollabNote extends Component<Props> {
     }
     return (
       <Container>
-        <Editor onEditorMount={this.onEditorMount} />
-        <PreviewContainer>
-          <Preview />
-        </PreviewContainer>
+        <Toolbar />
+        <ViewContainer>
+          <Editor onEditorMount={this.onEditorMount} />
+          <PreviewContainer>
+            <Preview />
+          </PreviewContainer>
+        </ViewContainer>
       </Container>
     );
   }

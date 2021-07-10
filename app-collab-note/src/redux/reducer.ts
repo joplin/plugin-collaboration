@@ -5,6 +5,7 @@ import { History } from 'history';
 import {
   ADD_RESOURCES,
   CONFIG_USER,
+  NOTE_SAVED,
   RESET_STATE,
   SET_API_STATUS,
   SET_HOST_JOINED,
@@ -59,7 +60,11 @@ export function reducer(state = initialState.app, action: Action): AppState {
     }
     case ADD_RESOURCES: {
       const { resources } = action.payload;
+
       return { ...state, resources };
+    }
+    case NOTE_SAVED: {
+      return {...state, isNoteSaved: true};
     }
   }
 

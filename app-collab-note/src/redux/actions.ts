@@ -13,6 +13,7 @@ export const SET_HOST_JOINED = 'SET_HOST_JOINED';
 export const RESET_STATE = 'RESET_STATE';
 export const ADD_RESOURCES = 'ADD_RESOURCES';
 export const SET_NOTE_CONTENT = 'SET_NOTE_CONTENT';
+export const NOTE_SAVED = 'NOTE_SAVED';
 
 function setApiStatus(apiStatus: ApiStatus | null): Action {
   return {
@@ -48,6 +49,12 @@ function setNoteContent(content: string): Action {
   };
 }
 
+function noteSaved(): Action {
+  return {
+    type: NOTE_SAVED,
+  };
+}
+
 function addResources(resources: Resource[]): Action {
   return {
     type: ADD_RESOURCES,
@@ -69,7 +76,6 @@ function setHostJoined(hostJoined: boolean): Action {
 function resetState(): Action {
   return {
     type: RESET_STATE,
-    payload: null
   };
 }
 
@@ -155,4 +161,40 @@ function handleHostStatusChange(hostJoined: boolean) {
   };
 }
 
-export { setUserDetails, setApiStatus, setNoteDetails, setNoteContent, addResources, resetState, configureUserDetails, handleHostStatusChange, setHostJoined };
+function saveNote() {
+  return (dispatch: DispatchType, getState: GetStateType): void => {
+    const appState = getState().app;
+    dispatch(setApiStatus({
+      messageType: MessageType.LOADING,
+      message: 'Trying to save the note...',
+    }));
+
+    bridge.updateNoteContent(appState.note)
+      .then(() => {
+        dispatch(setApiStatus({
+          messageType: MessageType.SUCCESS,
+          message: 'Note saved successfully!',
+        }));
+        dispatch(noteSaved());
+      })
+      .catch(err => {
+        dispatch(setApiStatus({
+          messageType: MessageType.ERROR,
+          message: err.message,
+        }));
+      });
+  };
+}
+
+export {
+  setUserDetails,
+  setApiStatus,
+  setNoteDetails,
+  setNoteContent,
+  addResources,
+  resetState,
+  configureUserDetails,
+  handleHostStatusChange,
+  setHostJoined,
+  saveNote,
+};
