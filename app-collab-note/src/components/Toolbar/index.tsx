@@ -69,14 +69,14 @@ function Toolbar(props: Props) {
     {
       label: 'save to Joplin',
       icon: faSave,
-      text: '',
+      text: 'Save',
       onlyHost: true,
       action: () => { props.save(); }
     },
     {
       label: 'copy room ID',
       icon: faClone,
-      text: 'copy room ID',
+      text: 'Copy Room ID',
       onlyHost: false,
       action: () => { props.copyRoomIdToClipboard(); }
     },
