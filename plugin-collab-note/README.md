@@ -1,5 +1,18 @@
-# Joplin Plugin
+<div align="center">
+  
+# Joplin Plugin: Collab-Note
+  
+This plugin enables the use of the Collaborative web app by adding an option to the config screen
 
+<img src="https://user-images.githubusercontent.com/63443657/124359271-d9344b00-dc41-11eb-89e0-de80412086d8.png" width="600px"/>
+
+and also adds a toolbar option to open the note in the Collaborative web app
+
+![124787997-9b4b6580-df66-11eb-93cd-f3fe563a3f96](https://user-images.githubusercontent.com/63443657/125190564-6cc9d500-e25b-11eb-9ad8-df92538704f4.gif)
+
+</div>
+
+****
 This is a template to create a new Joplin plugin.
 
 The main two files you will want to look at are:
