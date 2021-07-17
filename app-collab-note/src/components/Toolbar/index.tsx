@@ -76,7 +76,7 @@ function Toolbar(props: Props) {
     {
       label: 'Save note to Joplin',
       icon: faSave,
-      text: 'Save',
+      text: '',
       onlyHost: true,
       action: () => { props.save(); }
     },
