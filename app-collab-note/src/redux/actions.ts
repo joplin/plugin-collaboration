@@ -80,7 +80,7 @@ function resetState(): Action {
 }
 
 function loadNote() {
-  return async (dispatch: DispatchType, getState: GetStateType) => {
+  return async (dispatch: DispatchType, getState: GetStateType): Promise<void> => {
     const { noteId } = getState().app;
     if(noteId) {
       dispatch(setApiStatus({

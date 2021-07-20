@@ -71,21 +71,29 @@ function Toolbar(props: Props) {
       icon: faDownload,
       text: '',
       onlyHost: true,
-      action: () => { props.loadNote(); }
+      action: () => {
+        if(confirm('This will override the current contents. are you sure?')) {
+          props.loadNote();
+        } 
+      }
     },
     {
       label: 'Save note to Joplin',
       icon: faSave,
       text: '',
       onlyHost: true,
-      action: () => { props.save(); }
+      action: () => {
+        props.save();
+      }
     },
     {
       label: 'Copy Room ID',
       icon: faClipboard,
       text: '',
       onlyHost: false,
-      action: () => { props.copyRoomIdToClipboard(); }
+      action: () => { 
+        props.copyRoomIdToClipboard(); 
+      }
     },
   ];
 

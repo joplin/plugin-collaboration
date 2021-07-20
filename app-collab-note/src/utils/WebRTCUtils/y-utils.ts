@@ -163,6 +163,7 @@ class YUtils {
    * Need to find some other way to sync resource files.
    * Until then commenting below code disables the resource sync without effecting rest of the collaboration.
    */
+  // eslint-disable-next-line
   updateResources(resources: Resource[]) {
     // if(this.resources) {
     //   for(const i in resources) {
