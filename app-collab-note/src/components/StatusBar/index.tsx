@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import loader from './icons/loader.svg';
 import error from './icons/error.svg';
 import success from './icons/success.svg';
@@ -30,31 +30,40 @@ interface Props {
   showStatus: boolean;
 }
 
-class StatusBar extends Component<Props> {
-  render() {
-    const { message, messageType, showStatus } = this.props;
+const showImg = {
+  display: 'block',
+};
+const hideImg = {
+  display: 'none',
+};
 
-    if(!showStatus) {
-      return (
-        <></>
-      );
-    }
+function StatusBar(props: Props) {
+  const { message, messageType, showStatus } = props;
 
-    return (
-      <Container>
-        {messageType === MessageType.LOADING && (
-          <Image src={loader} alt="loader svg" />
-        )}
-        {messageType === MessageType.ERROR && (
-          <Image src={error} alt="loader svg" />
-        )}
-        {messageType === MessageType.SUCCESS && (
-          <Image src={success} alt="loader svg" />
-        )}
-        <Message>{message}</Message>
-      </Container>
-    );
+  if (!showStatus) {
+    return <></>;
   }
+
+  return (
+    <Container>
+      <Image
+        src={loader}
+        alt="loader svg"
+        style={messageType === MessageType.LOADING ? showImg : hideImg}
+      />
+      <Image
+        src={success}
+        alt="success svg"
+        style={messageType === MessageType.SUCCESS ? showImg : hideImg}
+      />
+      <Image
+        src={error}
+        alt="error svg"
+        style={messageType === MessageType.ERROR ? showImg : hideImg}
+      />
+      <Message>{message}</Message>
+    </Container>
+  );
 }
 
 const mapStateToProps = (state: { app: AppState }) => {
