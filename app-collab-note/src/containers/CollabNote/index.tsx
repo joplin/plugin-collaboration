@@ -50,6 +50,7 @@ const ViewContainer = styled.div`
 
     :last-child {
       border-right: none;
+      padding-right: 10px;
     }
   }
 `;
