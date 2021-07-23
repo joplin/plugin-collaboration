@@ -50,6 +50,7 @@ const ViewContainer = styled.div`
 
     :last-child {
       border-right: none;
+      padding-right: 10px;
     }
   }
 `;
@@ -112,6 +113,13 @@ class CollabNote extends Component<Props> {
   handleEditorContentChange = (editorInstance: CodeMirror.Editor) => {
     this.props.setNoteContent(editorInstance.getValue());
   };
+
+  componentDidUpdate(prevProps: Props) {
+    const { note } = this.props;
+    if (prevProps.note?.body !== note?.body) {
+      this.editor?.setValue(note?.body || '');
+    }
+  }
 
   componentWillUnmount() {
     yUtils().destroy();

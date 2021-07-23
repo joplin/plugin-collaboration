@@ -79,6 +79,49 @@ function resetState(): Action {
   };
 }
 
+function loadNote() {
+  return async (dispatch: DispatchType, getState: GetStateType): Promise<void> => {
+    const { noteId } = getState().app;
+    if(noteId) {
+      dispatch(setApiStatus({
+        messageType: MessageType.LOADING,
+        message: 'Trying to load the note...',
+      }));
+  
+      try { 
+        const note = await bridge.getNote(noteId, ['id', 'title', 'body']).catch(() => {
+          throw new Error('Failed to load the note!');
+        });
+        dispatch(setApiStatus({
+          messageType: MessageType.LOADING,
+          message: 'Note loaded successfully! Fetching note resources...',
+        }));
+        const resources = await bridge.getNoteResourceList(noteId).catch(() => {
+          throw new Error('Failed to fetch note resources!');
+        });
+        dispatch(setNoteDetails(note));
+        dispatch(addResources(resources));
+        dispatch(setApiStatus({
+          messageType: MessageType.SUCCESS,
+          message: 'Note fetched successfully!',
+        }));
+      }
+      catch (err) {
+        dispatch(setApiStatus({
+          messageType: MessageType.ERROR,
+          message: err.message,
+        }));
+      }
+    }
+    else {
+      dispatch(setApiStatus({
+        messageType: MessageType.ERROR,
+        message: 'Cannot fetch note from Joplin',
+      }));
+    }
+  };
+}
+
 function configureUserDetails(userConfig: UserConfig) {
   return (dispatch: DispatchType): void => {
     dispatch(setApiStatus(null));
@@ -114,13 +157,13 @@ function configureUserDetails(userConfig: UserConfig) {
 
           dispatch(setNoteDetails(note));
           dispatch(setUserDetails(userConfig));
-          return bridge.getNoteResouceList(noteId);
+          return bridge.getNoteResourceList(noteId);
         })
         .then((resources: Resource[]) => {
           dispatch(setApiStatus({
             messageType: MessageType.SUCCESS,
             status: FOUND,
-            message: 'Successfully fetched content! Happy Collaboration!!',
+            message: 'Successfully fetched note contents! Happy Collaboration!!',
           }));
           dispatch(addResources(resources));
           dispatch(push('/collab'));
@@ -197,4 +240,5 @@ export {
   handleHostStatusChange,
   setHostJoined,
   saveNote,
+  loadNote,
 };

@@ -105,7 +105,7 @@ async function getNote(id, fields = []) {
   return clipperApiExec('GET', `notes/${id}`, { fields: fields.join(',') });
 }
 
-async function getNoteResouceList(noteId) {
+async function getNoteResourceList(noteId) {
   if (!noteId) throw new Error('Cannot get resource list without note id');
   let resourceList = [];
   let hasMore = true;
@@ -148,5 +148,5 @@ export const bridge = {
   init,
   getNote,
   updateNoteContent,
-  getNoteResouceList
+  getNoteResourceList
 };

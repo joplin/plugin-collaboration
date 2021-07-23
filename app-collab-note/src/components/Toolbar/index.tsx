@@ -2,10 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faClone } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faClipboard, faDownload } from '@fortawesome/free-solid-svg-icons';
 
 import { connect } from 'react-redux';
-import { saveNote } from 'redux/actions';
+import { loadNote, saveNote } from 'redux/actions';
 import { AppState } from 'redux/types';
 
 const Container = styled.div`
@@ -24,9 +24,8 @@ const Option = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-around;
-  height: 50px;
   min-width: 30px;
-  padding: 0px 10px;
+  padding: 10px;
   gap: 5px;
   color: #738598;
   border-radius: 3px;
@@ -47,6 +46,7 @@ interface ToolbarItemProps {
 interface Props {
   isHost: boolean;
   toolbarItems?: ToolbarItemProps[];
+  loadNote: () => void;
   save: () => void;
   copyRoomIdToClipboard: () => void;
 }
@@ -59,7 +59,7 @@ function ToolbarItem(props: ToolbarItemProps & { isHost: boolean }) {
   return (
     <Option title={props.label} onClick={props.action}>
       { props.text }
-      <FontAwesomeIcon icon={props.icon} size="lg"/>
+      <FontAwesomeIcon icon={props.icon}/>
     </Option>
   );
 }
@@ -67,18 +67,33 @@ function ToolbarItem(props: ToolbarItemProps & { isHost: boolean }) {
 function Toolbar(props: Props) {
   const defaultOptions: ToolbarItemProps[] = [
     {
-      label: 'save to Joplin',
-      icon: faSave,
-      text: 'Save',
+      label: 'Fetch note from Joplin',
+      icon: faDownload,
+      text: '',
       onlyHost: true,
-      action: () => { props.save(); }
+      action: () => {
+        if(confirm('This will override the current contents. are you sure?')) {
+          props.loadNote();
+        } 
+      }
     },
     {
-      label: 'copy room ID',
-      icon: faClone,
-      text: 'Copy Room ID',
+      label: 'Save note to Joplin',
+      icon: faSave,
+      text: '',
+      onlyHost: true,
+      action: () => {
+        props.save();
+      }
+    },
+    {
+      label: 'Copy Room ID',
+      icon: faClipboard,
+      text: '',
       onlyHost: false,
-      action: () => { props.copyRoomIdToClipboard(); }
+      action: () => { 
+        props.copyRoomIdToClipboard(); 
+      }
     },
   ];
 
@@ -124,6 +139,9 @@ const mapDispatchToProps = (dispatch: any) => {
     save: () => {
       dispatch(saveNote());
     },
+    loadNote: () => {
+      dispatch(loadNote());
+    }
   };
 };
 
