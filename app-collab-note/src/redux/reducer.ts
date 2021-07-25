@@ -11,6 +11,7 @@ import {
   SET_HOST_JOINED,
   SET_NOTE,
   SET_NOTE_CONTENT,
+  SET_NOTE_TITLE,
 } from './actions';
 import { Action, AppState, UserConfig } from './types';
 import { initialState } from './configStore';
@@ -64,7 +65,12 @@ export function reducer(state = initialState.app, action: Action): AppState {
       return { ...state, resources };
     }
     case NOTE_SAVED: {
-      return {...state, isNoteSaved: true};
+      return { ...state, isNoteSaved: true };
+    }
+    case SET_NOTE_TITLE: {
+      const { title } = action.payload;
+      const newNote = Object.assign({}, state.note, { title });
+      return { ...state, note: newNote };
     }
   }
 

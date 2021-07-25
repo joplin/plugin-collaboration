@@ -47,8 +47,8 @@ class YUtils {
 
     this.isInitialized = true;
     this.yDoc = new Y.Doc();
-    if (this.yText) {
-      this.yUndoManager = new Y.UndoManager(this.yText);
+    if (this.noteBody) {
+      this.yUndoManager = new Y.UndoManager(this.noteBody);
     }
 
     this.isHost = isHost;
@@ -105,8 +105,11 @@ class YUtils {
     });
   }
 
-  get yText() {
-    return this.yDoc?.getText('note');
+  get noteBody() {
+    return this.yDoc?.getText('note-body');
+  }
+  get noteTitle() {
+    return this.yDoc?.getText('note-title');
   }
 
   get props() {
@@ -176,11 +179,28 @@ class YUtils {
   }
 
   setEditor(editor: CodeMirror.Editor) {
-    if (!this.isInitialized || !this.yText || !this.provider) return;
-    this.binding = new CodemirrorBinding(this.yText, editor, this.provider.awareness, { yUndoManager: this.yUndoManager });
+    if (!this.isInitialized || !this.noteBody || !this.provider) return;
+    this.binding = new CodemirrorBinding(this.noteBody, editor, this.provider.awareness, { yUndoManager: this.yUndoManager });
     
     if(this.username)
       this.setUsername(this.username);
+  }
+
+  bindNoteTitle(textArea: HTMLInputElement) {
+    if (!this.isInitialized || !this.noteBody || !this.provider) return;
+    if(!textArea.value && this.noteTitle) {
+      textArea.value = this.noteTitle.toString();
+    }
+    this.noteTitle?.observe(() => {
+      if(this.noteTitle?.toString())
+        textArea.value = this.noteTitle?.toString();
+    });
+    textArea.addEventListener('input', () => {
+      if(this.noteTitle?.length !== 0) {
+        this.noteTitle?.delete(0, this.noteTitle.toString().length);
+      }
+      this.noteTitle?.insert(0, textArea.value);
+    });
   }
 
   setUsername(username: string) {

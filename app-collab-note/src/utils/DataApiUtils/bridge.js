@@ -95,9 +95,9 @@ async function clipperApiExec(method, path, query, body, responseType) {
 }
 
 async function updateNoteContent(note) {
-  const { id, body } = note;
+  const { id, body, title } = note;
   if (!id) throw new Error('Cannot update a note without id');
-  return clipperApiExec('PUT', `notes/${id}`, {}, { body });
+  return clipperApiExec('PUT', `notes/${id}`, {}, { body, title });
 }
 
 async function getNote(id, fields = []) {

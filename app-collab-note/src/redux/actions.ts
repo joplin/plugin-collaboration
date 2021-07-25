@@ -4,7 +4,7 @@ import { Note, Resource } from 'utils/types';
 import { bridge } from 'utils/DataApiUtils/bridge';
 import { FOUND, SEARCHING } from 'utils/DataApiUtils/clipperPortStatus';
 import { DispatchType, GetStateType } from './store';
-import { ApiStatus, MessageType, UserConfig, Action } from './types';
+import { ApiStatus, MessageType, UserConfig, Action, AppState } from './types';
 
 export const SET_API_STATUS = 'SET_API_STATUS';
 export const SET_NOTE = 'SET_NOTE';
@@ -14,6 +14,7 @@ export const RESET_STATE = 'RESET_STATE';
 export const ADD_RESOURCES = 'ADD_RESOURCES';
 export const SET_NOTE_CONTENT = 'SET_NOTE_CONTENT';
 export const NOTE_SAVED = 'NOTE_SAVED';
+export const SET_NOTE_TITLE = 'SET_NOTE_TITLE';
 
 function setApiStatus(apiStatus: ApiStatus | null): Action {
   return {
@@ -76,6 +77,15 @@ function setHostJoined(hostJoined: boolean): Action {
 function resetState(): Action {
   return {
     type: RESET_STATE,
+  };
+}
+
+function setNoteTitle(noteTitle: string): Action {
+  return {
+    type: SET_NOTE_TITLE,
+    payload: {
+      title: noteTitle
+    }
   };
 }
 
@@ -206,7 +216,7 @@ function handleHostStatusChange(hostJoined: boolean) {
 
 function saveNote() {
   return (dispatch: DispatchType, getState: GetStateType): void => {
-    const appState = getState().app;
+    const appState = getState().app as AppState;
     dispatch(setApiStatus({
       messageType: MessageType.LOADING,
       message: 'Trying to save the note...',
@@ -236,6 +246,7 @@ export {
   setNoteContent,
   addResources,
   resetState,
+  setNoteTitle,
   configureUserDetails,
   handleHostStatusChange,
   setHostJoined,
