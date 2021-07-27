@@ -12,6 +12,7 @@ import SessionEvents from 'utils/WebRTCUtils/sessionEvents';
 import Preview from 'components/Preview';
 import { AppState } from 'redux/types';
 import Toolbar from 'components/Toolbar';
+import Titlebar from 'components/Titlebar';
 
 interface Props {
   isHost: boolean;
@@ -132,6 +133,7 @@ class CollabNote extends Component<Props> {
     }
     return (
       <Container>
+        <Titlebar />
         <Toolbar />
         <ViewContainer>
           <Editor onEditorMount={this.onEditorMount} />
