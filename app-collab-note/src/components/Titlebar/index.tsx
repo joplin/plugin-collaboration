@@ -11,6 +11,7 @@ const Container = styled.div`
 `;
 const TitleInput = styled.input`
   display: block;
+  width: 100%;
   border: none;
   font-size: xx-large;
 `;

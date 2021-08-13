@@ -43,7 +43,7 @@ const Container = styled.div`
 
 const ViewContainer = styled.div`
   display: flex;
-  height: 80vh;
+  height: calc(100vh - 175px);
   padding: 10px 0;
   >div {
     width: 0%;
