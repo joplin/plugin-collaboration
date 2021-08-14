@@ -128,7 +128,9 @@ class CollabNote extends Component<Props> {
   }
 
   render() {
-    if (!this.props.roomId || !this.props.username) {
+    const { hostJoined, isHost, roomId, username } = this.props;
+
+    if (!roomId || !username) {
       return <Redirect to={'/'} />;
     }
 
@@ -200,9 +202,9 @@ class CollabNote extends Component<Props> {
 
     return (
       <Container>
-        <Titlebar />
+        <Titlebar disabled={!(isHost || hostJoined)} />
         <Toolbar
-          toolbarItems={toolbarOptions}
+          toolbarItems={(hostJoined || isHost) ? toolbarOptions : []}
           toolbarRoutine={() => { EditorService.focusEditor(); }}
         />
         <ViewContainer>
