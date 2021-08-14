@@ -45,7 +45,8 @@ export interface ToolbarItemProps {
 
 interface Props {
   isHost: boolean;
-  toolbarItems?: ToolbarItemProps[];
+  toolbarItems: ToolbarItemProps[];
+  toolbarRoutine?: () => void;
   loadNote: () => void;
   save: () => void;
   copyRoomIdToClipboard: () => void;
@@ -74,7 +75,7 @@ function Toolbar(props: Props) {
       action: () => {
         if(confirm('This will override the current contents. are you sure?')) {
           props.loadNote();
-        } 
+        }
       }
     },
     {
@@ -83,7 +84,9 @@ function Toolbar(props: Props) {
       text: '',
       onlyHost: true,
       action: () => {
-        props.save();
+        if(confirm('Do you want to save the changes to Joplin?')) {
+          props.save();
+        }
       }
     },
     {
@@ -105,7 +108,7 @@ function Toolbar(props: Props) {
 
   return (
     <Container>
-      <OptionsContainer>
+      <OptionsContainer onClick={props.toolbarRoutine}>
         {renderToolbarItems()}
       </OptionsContainer>
       <OptionsContainer>

@@ -13,7 +13,7 @@ import Preview from 'components/Preview';
 import { AppState } from 'redux/types';
 import {default as Toolbar, ToolbarItemProps} from 'components/Toolbar';
 import Titlebar from 'components/Titlebar';
-import { faBold, faCode, faItalic, faLink } from '@fortawesome/free-solid-svg-icons';
+import { faBold, faCheckSquare, faCode, faEllipsisH, faHeading, faItalic, faLink, faListOl, faListUl } from '@fortawesome/free-solid-svg-icons';
 import * as EditorService from './EditorService';
 
 interface Props {
@@ -161,12 +161,50 @@ class CollabNote extends Component<Props> {
         text: '',
         onlyHost: false
       },
+      {
+        icon: faListOl,
+        action: () => { EditorService.textNumberedList(); },
+        label: 'Numbered List',
+        text: '',
+        onlyHost: false
+      },
+      {
+        icon: faListUl,
+        action: () => { EditorService.textBulletedList(); },
+        label: 'Bulleted List',
+        text: '',
+        onlyHost: false
+      },
+      {
+        icon: faCheckSquare,
+        action: () => { EditorService.textCheckbox(); },
+        label: 'Checkbox',
+        text: '',
+        onlyHost: false
+      },
+      {
+        icon: faHeading,
+        action: () => { EditorService.textHeading(); },
+        label: 'Heading',
+        text: '',
+        onlyHost: false
+      },
+      {
+        icon: faEllipsisH,
+        action: () => { EditorService.textHorizontalRule(); },
+        label: 'Horizontal Rule',
+        text: '',
+        onlyHost: false
+      },
     ];
 
     return (
       <Container>
         <Titlebar />
-        <Toolbar toolbarItems={toolbarOptions}/>
+        <Toolbar
+          toolbarItems={toolbarOptions}
+          toolbarRoutine={() => { EditorService.focusEditor(); }}
+        />
         <ViewContainer>
           <Editor onEditorMount={this.onEditorMount} />
           <PreviewContainer>
