@@ -11,8 +11,10 @@ import { addResources, handleHostStatusChange, resetState, setNoteContent } from
 import SessionEvents from 'utils/WebRTCUtils/sessionEvents';
 import Preview from 'components/Preview';
 import { AppState } from 'redux/types';
-import Toolbar from 'components/Toolbar';
+import {default as Toolbar, ToolbarItemProps} from 'components/Toolbar';
 import Titlebar from 'components/Titlebar';
+import { faBold, faCheckSquare, faCode, faEllipsisH, faHeading, faItalic, faLink, faListOl, faListUl } from '@fortawesome/free-solid-svg-icons';
+import * as EditorService from './EditorService';
 
 interface Props {
   isHost: boolean;
@@ -41,7 +43,7 @@ const Container = styled.div`
 
 const ViewContainer = styled.div`
   display: flex;
-  height: 80vh;
+  height: calc(100vh - 175px);
   padding: 10px 0;
   >div {
     width: 0%;
@@ -61,8 +63,6 @@ const PreviewContainer = styled.div`
 `;
 
 class CollabNote extends Component<Props> {
-  editor: CodeMirror.Editor | undefined;
-
   constructor(props: Props) {
     super(props);
     const { isHost, roomId, username, resources, setHostJoined } = props;
@@ -82,18 +82,17 @@ class CollabNote extends Component<Props> {
     const { hostJoined, setHostJoined } = this.props;
     if (hostJoined) return;
     setHostJoined(true);
-    this.editor?.setOption('readOnly', false);
+    EditorService.setReadonly(false);
   };
 
   handleHostLeft = () => {
     const { hostJoined, setHostJoined } = this.props;
     if (!hostJoined) return;
+    
     setHostJoined(false);
-    this.editor?.setOption('readOnly', true);
-
-    // This will clean the data shared by the host, when host leaves.
-    this.editor?.clearHistory();
-    this.editor?.setValue('');
+    EditorService.setReadonly(true);
+    // This will clean the data shared by the host, when the host leaves.
+    EditorService.reset();
   };
 
   handleResourceChanged = (resources: Resource[]) => {
@@ -108,7 +107,7 @@ class CollabNote extends Component<Props> {
     if (isHost && note) {
       editor.setValue(note.body);
     }
-    this.editor = editor;
+    EditorService.setEditor(editor);
   };
 
   handleEditorContentChange = (editorInstance: CodeMirror.Editor) => {
@@ -118,23 +117,96 @@ class CollabNote extends Component<Props> {
   componentDidUpdate(prevProps: Props) {
     const { note } = this.props;
     if (prevProps.note?.body !== note?.body) {
-      this.editor?.setValue(note?.body || '');
+      EditorService.setValue(note?.body || '');
     }
   }
 
   componentWillUnmount() {
     yUtils().destroy();
+    EditorService.setEditor(null);
     this.props.resetState();
   }
 
   render() {
-    if (!this.props.roomId || !this.props.username) {
+    const { hostJoined, isHost, roomId, username } = this.props;
+
+    if (!roomId || !username) {
       return <Redirect to={'/'} />;
     }
+
+    const toolbarOptions: ToolbarItemProps[] = [
+      {
+        icon: faBold,
+        action: () => { EditorService.textBold(); },
+        label: 'Bold',
+        text: '',
+        onlyHost: false
+      },
+      {
+        icon: faItalic,
+        action: () => { EditorService.textItalic(); },
+        label: 'Italic',
+        text: '',
+        onlyHost: false
+      },
+      {
+        icon: faCode,
+        action: () => { EditorService.textCode(); },
+        label: 'Code',
+        text: '',
+        onlyHost: false
+      },
+      {
+        icon: faLink,
+        action: () => { EditorService.textLink(); },
+        label: 'Link',
+        text: '',
+        onlyHost: false
+      },
+      {
+        icon: faListOl,
+        action: () => { EditorService.textNumberedList(); },
+        label: 'Numbered List',
+        text: '',
+        onlyHost: false
+      },
+      {
+        icon: faListUl,
+        action: () => { EditorService.textBulletedList(); },
+        label: 'Bulleted List',
+        text: '',
+        onlyHost: false
+      },
+      {
+        icon: faCheckSquare,
+        action: () => { EditorService.textCheckbox(); },
+        label: 'Checkbox',
+        text: '',
+        onlyHost: false
+      },
+      {
+        icon: faHeading,
+        action: () => { EditorService.textHeading(); },
+        label: 'Heading',
+        text: '',
+        onlyHost: false
+      },
+      {
+        icon: faEllipsisH,
+        action: () => { EditorService.textHorizontalRule(); },
+        label: 'Horizontal Rule',
+        text: '',
+        onlyHost: false
+      },
+    ];
+
     return (
       <Container>
-        <Titlebar />
-        <Toolbar />
+        <Titlebar disabled={!(isHost || hostJoined)} />
+        <Toolbar
+          toolbarItems={(hostJoined || isHost) ? toolbarOptions : []}
+          toolbarRoutine={() => { EditorService.focusEditor(); }}
+        />
         <ViewContainer>
           <Editor onEditorMount={this.onEditorMount} />
           <PreviewContainer>

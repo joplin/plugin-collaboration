@@ -11,12 +11,14 @@ const Container = styled.div`
 `;
 const TitleInput = styled.input`
   display: block;
+  width: 100%;
   border: none;
   font-size: xx-large;
 `;
 
 interface Props {
   title: string;
+  disabled: boolean;
   updateTitle: (title: string) => void;
 }
 
@@ -28,13 +30,14 @@ function Titlebar(props: Props) {
       yUtils().bindNoteTitle(titleInput.current);
   }, []);
 
-  const { title, updateTitle } = props;
+  const { title, disabled, updateTitle } = props;
 
   return (
     <Container>
       <TitleInput
         ref={titleInput}
         value={title}
+        disabled={disabled}
         onInput={() => updateTitle(titleInput.current?.value || '')}
         onChange={() => updateTitle(titleInput.current?.value || '')}
       />

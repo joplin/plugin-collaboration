@@ -47,8 +47,8 @@ class YUtils {
 
     this.isInitialized = true;
     this.yDoc = new Y.Doc();
-    if (this.noteBody) {
-      this.yUndoManager = new Y.UndoManager(this.noteBody);
+    if (this.yNoteBody) {
+      this.yUndoManager = new Y.UndoManager(this.yNoteBody);
     }
 
     this.isHost = isHost;
@@ -105,10 +105,11 @@ class YUtils {
     });
   }
 
-  get noteBody() {
+  get yNoteBody() {
     return this.yDoc?.getText('note-body');
   }
-  get noteTitle() {
+
+  get yNoteTitle() {
     return this.yDoc?.getText('note-title');
   }
 
@@ -179,28 +180,36 @@ class YUtils {
   }
 
   setEditor(editor: CodeMirror.Editor) {
-    if (!this.isInitialized || !this.noteBody || !this.provider) return;
-    this.binding = new CodemirrorBinding(this.noteBody, editor, this.provider.awareness, { yUndoManager: this.yUndoManager });
+    if (!this.isInitialized || !this.yNoteBody || !this.provider) return;
+    this.binding = new CodemirrorBinding(this.yNoteBody, editor, this.provider.awareness, { yUndoManager: this.yUndoManager });
     
     if(this.username)
       this.setUsername(this.username);
   }
 
   bindNoteTitle(textArea: HTMLInputElement) {
-    if (!this.isInitialized || !this.noteBody || !this.provider) return;
-    if(!textArea.value && this.noteTitle) {
-      textArea.value = this.noteTitle.toString();
-    }
-    this.noteTitle?.observe(() => {
-      if(this.noteTitle?.toString())
-        textArea.value = this.noteTitle?.toString();
-    });
-    textArea.addEventListener('input', () => {
-      if(this.noteTitle?.length !== 0) {
-        this.noteTitle?.delete(0, this.noteTitle.toString().length);
+    if (!this.isInitialized || !this.yNoteTitle || !this.provider) return;
+
+    const updateNoteTitle = () => {
+      if(this.yNoteTitle?.length !== 0) {
+        this.yNoteTitle?.delete(0, this.yNoteTitle.length);
       }
-      this.noteTitle?.insert(0, textArea.value);
+      this.yNoteTitle?.insert(0, textArea.value);
+    };
+
+    if(this.isHost && textArea.value) {
+      updateNoteTitle();
+    }
+    else if(!textArea.value) {
+      textArea.value = this.yNoteTitle.toString();
+    }
+    
+    this.yNoteTitle.observe(() => {
+      if(this.yNoteTitle?.toString())
+        textArea.value = this.yNoteTitle?.toString();
     });
+    textArea.addEventListener('input', updateNoteTitle);
+    textArea.addEventListener('change', updateNoteTitle);
   }
 
   setUsername(username: string) {

@@ -4,16 +4,6 @@
   box-sizing: border-box;
 }
 
-.App {
-  font-family: "Open Sans", sans-serif;
-  min-width: 100vw;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-}
-
 /* Copied from Joplin desktop */
 
 ::-webkit-scrollbar {
