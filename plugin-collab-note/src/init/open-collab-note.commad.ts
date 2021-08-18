@@ -1,12 +1,19 @@
 import joplin from "api";
-import { isURL } from "validator";
+import validator from "validator";
+import opener from "opener";
+
 import {
   OPEN_COLLAB_NOTE_COMMAND,
   PLUGIN_ICON,
   COLLAB_WEB_APP_URL_ID
 } from "./constants";
 
-const opener = require('opener');
+const localhostRegEx = /^http:\/\/localhost:([0-9]{4,})\//g;
+
+function isValidURL(url: string) {
+  if(!(url.startsWith('http://') || url.startsWith('https://'))) return false;
+  return validator.isURL(url) || localhostRegEx.test(url);
+}
 
 export async function registerOpenCollabNoteCommand() {
   await joplin.commands.register({
@@ -28,18 +35,12 @@ export async function registerOpenCollabNoteCommand() {
         webAppURL = webAppURL + '/';
       }
 
-      const localhostRegEx = /^http:\/\/localhost:([0-9]{4})\//g;
 
-      if(isURL(webAppURL) || localhostRegEx.test(webAppURL)) {
+      if(isValidURL(webAppURL)) {
         const token: string = await joplin.settings.globalValue('api.token');
         const note: { id: string } = await joplin.workspace.selectedNote();
         console.log('Collaboration plugin:',{ WebAppURL: webAppURL, token, note });
-        try {
-          opener(`${webAppURL}${note.id}/${token}`);
-        }
-        catch(error) {
-          console.log(error);
-        }
+        opener(`${webAppURL}${note.id}/${token}`);
       }
       else {
         await joplin.views.dialogs.showMessageBox(`Error: Invalid URL! - ${webAppURL}`);
