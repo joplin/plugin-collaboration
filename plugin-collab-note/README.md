@@ -8,7 +8,7 @@ This plugin enables the use of the Collaborative web app by adding an option to 
 
 and also adds a toolbar option to open the note in the Collaborative web app
 
-![collab note plugin demo](/assets/collab-note-plugin-demo.gif)
+![collab note plugin demo](assets/collab-note-plugin-demo.gif)
 
 </div>
 Before you can use the plugin, the Web Clipper service should be enabled in 
