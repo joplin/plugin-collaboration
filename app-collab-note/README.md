@@ -3,7 +3,7 @@
 This Project aims to develop a web app with a collaborative editor for a Joplin note. Yjs is being used for peer-to-peer communication and conflict-resolution. Yjs is a shared editing framework. It exposes Shared Types that can be manipulated like any other data type and they sync automatically. Yjs also provides binding libraries for editors like CodeMirror, Quill, ProseMirror, etc.
 ## Demo
 
-![Collab Note Demo](/assets/collab-note-demo.gif)
+![Collab Note Demo](assets/collab-note-demo.gif)
 
 For more info on the project please refer to the post: [real-time collaboration on  note project](https://discourse.joplinapp.org/t/real-time-collaboration-on-a-note-project/17486)
 

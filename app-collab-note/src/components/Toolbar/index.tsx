@@ -74,7 +74,7 @@ function Toolbar(props: Props) {
       text: '',
       onlyHost: true,
       action: () => {
-        if(confirm('This will override the current contents. are you sure?')) {
+        if(confirm('This will override the current contents of the note.\nare you sure?')) {
           props.loadNote();
         }
       }
