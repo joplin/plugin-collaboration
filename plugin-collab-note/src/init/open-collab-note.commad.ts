@@ -11,6 +11,7 @@ import {
 const localhostRegEx = /^http:\/\/localhost:([0-9]{4,})\//g;
 
 function isValidURL(url: string) {
+  url = url.toLocaleLowerCase();
   if(!(url.startsWith('http://') || url.startsWith('https://'))) return false;
   return validator.isURL(url) || localhostRegEx.test(url);
 }
