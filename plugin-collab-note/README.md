@@ -8,9 +8,12 @@ This plugin enables the use of the Collaborative web app by adding an option to 
 
 and also adds a toolbar option to open the note in the Collaborative web app
 
-![124787997-9b4b6580-df66-11eb-93cd-f3fe563a3f96](https://user-images.githubusercontent.com/63443657/125190564-6cc9d500-e25b-11eb-9ad8-df92538704f4.gif)
+![collab note plugin demo](assets/collab-note-plugin-demo.gif)
 
 </div>
+Before you can use the plugin, the Web Clipper service should be enabled in 
+
+`Tools>Options>Web Clipper` 
 
 ****
 This is a template to create a new Joplin plugin.

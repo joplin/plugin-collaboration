@@ -3,32 +3,30 @@
 This Project aims to develop a web app with a collaborative editor for a Joplin note. Yjs is being used for peer-to-peer communication and conflict-resolution. Yjs is a shared editing framework. It exposes Shared Types that can be manipulated like any other data type and they sync automatically. Yjs also provides binding libraries for editors like CodeMirror, Quill, ProseMirror, etc.
 ## Demo
 
-Changes can be saved back to Joplin as demonstrated below
-
-![124788006-9d152900-df66-11eb-9e6b-a06b3ffc7203](https://user-images.githubusercontent.com/63443657/125190893-283f3900-e25d-11eb-82dd-ae050810ac8e.gif)
-
-Anyone with the room Id and access to the web app can join the collaborative session
-
-![124788010-9dadbf80-df66-11eb-92c3-9b5b64f2aee2](https://user-images.githubusercontent.com/63443657/125190930-5f154f00-e25d-11eb-832a-830c7a99a9b0.gif)
+![Collab Note Demo](assets/collab-note-demo.gif)
 
 For more info on the project please refer to the post: [real-time collaboration on  note project](https://discourse.joplinapp.org/t/real-time-collaboration-on-a-note-project/17486)
 
 ## getting started
-Firstly install all the project dependencies
+Open terminal from the `app-collab-note/` location and follow the below steps.
+
+Firstly, install all the project dependencies:
 ```
 npm install
 ```
 
-If you want to use development build of Data API (starting port: 27583), this app should be run as
+If you want to test it with development version of Joplin Desktop (DataAPI starting port: 27583), this app should be run as:
 
 ```
 npm start
 ```
-If you want to use production build of Data API (starting port: 41184), this app should be run as
+If you want to test it with production release of Joplin Desktop (DataAPI starting port: 41184), this app should be run as:
 ```
-npm run build
-serve build
+npm run start:prod
 ```
+
+After successful execution of the above commands you should see the following:
+![](/assets/command-promt.png)
 
 ## Usage
 <mark>Currently this web app can be tested by running it locally and pasting the url in the config screen for the Collab Note Plugin.</mark>

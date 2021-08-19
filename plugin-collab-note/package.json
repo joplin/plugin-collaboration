@@ -16,6 +16,8 @@
   },
   "devDependencies": {
     "@types/node": "^14.0.14",
+    "@types/opener": "^1.4.0",
+    "@types/validator": "^13.6.3",
     "chalk": "^4.1.0",
     "copy-webpack-plugin": "^6.1.0",
     "fs-extra": "^9.0.1",
@@ -29,6 +31,7 @@
     "yargs": "^16.2.0"
   },
   "dependencies": {
-    "opener": "^1.5.2"
+    "opener": "^1.5.2",
+    "validator": "^13.6.0"
   }
 }
