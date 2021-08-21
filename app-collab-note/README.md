@@ -26,7 +26,7 @@ npm run start:prod
 ```
 
 After successful execution of the above commands you should see the following:
-![](/assets/command-promt.png)
+![](assets/command-promt.png)
 
 ## Usage
 <mark>Currently this web app can be tested by running it locally and pasting the url in the config screen for the Collab Note Plugin.</mark>
